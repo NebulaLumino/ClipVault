@@ -5,7 +5,7 @@ import { allstarClient } from '../integrations/allstar/AllstarClient.js';
 import { ClipStatus } from '../types/index.js';
 import type { ClipMonitorJobData } from '../types/index.js';
 
-function mapAllstarStatusToClipStatus(status: string): ClipStatus {
+export function mapAllstarStatusToClipStatus(status: string): ClipStatus {
   switch (status.toLowerCase()) {
     case 'requested':
       return ClipStatus.REQUESTED;
