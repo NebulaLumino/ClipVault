@@ -1,37 +1,61 @@
 import { Prisma } from '@prisma/client';
 import prisma from '../db/prisma.js';
 import { logger } from '../utils/logger.js';
-import { ClipStatus, ClipType } from '../types/index.js';
-import type { ClipRecord } from '../types/index.js';
+import { ClipStatus, ClipType, MatchStatus } from '../types/index.js';
+import type { ClipRecord, MatchRecord } from '../types/index.js';
+
+export interface CreateClipData {
+  matchId: string;
+  userId: string;
+  allstarClipId: string;
+  type: ClipType;
+  title?: string;
+  thumbnailUrl?: string;
+  videoUrl?: string;
+  duration?: number;
+  metadata?: Record<string, unknown>;
+}
 
 export class ClipService {
-  async createClip(
-    matchId: string,
-    userId: string,
-    allstarClipId: string,
-    type: ClipType,
-    metadata?: Record<string, unknown>
-  ): Promise<ClipRecord> {
+  async createClip(data: CreateClipData): Promise<ClipRecord> {
     const clip = await prisma.clipRecord.create({
       data: {
-        matchId,
-        userId,
-        allstarClipId,
-        type,
+        matchId: data.matchId,
+        userId: data.userId,
+        allstarClipId: data.allstarClipId,
+        type: data.type,
         status: ClipStatus.REQUESTED,
         requestedAt: new Date(),
-        metadata: metadata as Prisma.InputJsonValue | undefined,
+        title: data.title,
+        thumbnailUrl: data.thumbnailUrl,
+        videoUrl: data.videoUrl,
+        duration: data.duration,
+        metadata: data.metadata as Prisma.InputJsonValue | undefined,
       },
     });
 
     logger.info('Created clip record', { 
-      matchId, 
+      matchId: data.matchId, 
       clipId: clip.id, 
-      allstarClipId,
-      type 
+      allstarClipId: data.allstarClipId,
+      type: data.type 
     });
 
     return clip as unknown as ClipRecord;
+  }
+
+  async getMatchById(matchId: string): Promise<MatchRecord | null> {
+    const match = await prisma.matchRecord.findUnique({
+      where: { id: matchId },
+    });
+    return match as unknown as MatchRecord | null;
+  }
+
+  async getClipsByMatchId(matchId: string): Promise<ClipRecord[]> {
+    const clips = await prisma.clipRecord.findMany({
+      where: { matchId },
+    });
+    return clips as unknown as ClipRecord[];
   }
 
   async getClipByAllstarId(allstarClipId: string): Promise<ClipRecord | null> {
@@ -99,10 +123,10 @@ export class ClipService {
         ...(status === ClipStatus.READY && { readyAt: new Date() }),
         ...(status === ClipStatus.DELIVERED && { deliveredAt: new Date() }),
         ...(data && {
-          thumbnailUrl: data.thumbnailUrl,
-          videoUrl: data.videoUrl,
-          duration: data.duration,
-          title: data.title,
+          ...(data.thumbnailUrl && { thumbnailUrl: data.thumbnailUrl }),
+          ...(data.videoUrl && { videoUrl: data.videoUrl }),
+          ...(data.duration && { duration: data.duration }),
+          ...(data.title && { title: data.title }),
         }),
       },
     });

@@ -170,19 +170,21 @@ export interface MatchPollJobData {
 export interface ClipRequestJobData {
   matchId: string;
   userId: string;
-  platform: PlatformType;
+  platform: string;
+  platformAccountId: string;
   platformMatchId: string;
+  gameTitle: GamePlatform;
 }
 
 export interface ClipMonitorJobData {
+  clipId: string;
   matchId: string;
-  clipRequestId: string;
 }
 
 export interface ClipDeliveryJobData {
   clipId: string;
   userId: string;
-  matchId: string;
+  matchId?: string;
 }
 
 // Platform match info
