@@ -1,8 +1,9 @@
+import 'dotenv/config';
 import { z } from 'zod';
 
 const configSchema = z.object({
   // Database
-  DATABASE_URL: z.string().url(),
+  DATABASE_URL: z.string().min(1),
 
   // Redis
   REDIS_HOST: z.string().default('localhost'),
@@ -16,7 +17,7 @@ const configSchema = z.object({
   DISCORD_GUILD_ID: z.string().optional(),
 
   // OAuth
-  OAUTH_REDIRECT_BASE: z.string().url().default('http://localhost:3000'),
+  OAUTH_REDIRECT_BASE: z.string().min(1).default('http://localhost:3000'),
 
   // Steam
   STEAM_API_KEY: z.string().optional(),
@@ -32,7 +33,7 @@ const configSchema = z.object({
 
   // Allstar
   ALLSTAR_API_KEY: z.string().optional(),
-  ALLSTAR_API_URL: z.string().url().default('https://api.allstar.gg'),
+  ALLSTAR_API_URL: z.string().min(1).default('https://api.allstar.gg'),
   ALLSTAR_PARTNER_NAME: z.string().optional(),
 
   // Application
