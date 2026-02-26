@@ -19,10 +19,14 @@ export class ClipVaultClient extends Client {
         GatewayIntentBits.MessageContent,
       ],
     });
-    this.rest = new REST({ version: '10' }).setToken(config.DISCORD_BOT_TOKEN);
+    const token = config.DISCORD_BOT_TOKEN || '';
+    this.rest = new REST({ version: '10' }).setToken(token);
   }
 
   async login(): Promise<string> {
+    if (!config.DISCORD_BOT_TOKEN) {
+      throw new Error('Discord bot token not configured');
+    }
     logger.info('Logging in to Discord...');
     const token = await super.login(config.DISCORD_BOT_TOKEN);
     logger.info('Discord bot logged in successfully');
@@ -83,6 +87,11 @@ discordClient.on('ready', async () => {
   logger.info(`Discord bot ready: ${discordClient.user?.tag}`);
   
   // Register slash commands
+  if (!config.DISCORD_CLIENT_ID) {
+    logger.warn('Discord client ID not configured, skipping command registration');
+    return;
+  }
+  
   try {
     await discordClient.rest.put(
       Routes.applicationCommands(config.DISCORD_CLIENT_ID),

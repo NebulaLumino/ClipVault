@@ -11,9 +11,9 @@ const configSchema = z.object({
   REDIS_PASSWORD: z.string().optional(),
 
   // Discord
-  DISCORD_CLIENT_ID: z.string().min(1),
-  DISCORD_CLIENT_SECRET: z.string().min(1),
-  DISCORD_BOT_TOKEN: z.string().min(1),
+  DISCORD_CLIENT_ID: z.string().optional(),
+  DISCORD_CLIENT_SECRET: z.string().optional(),
+  DISCORD_BOT_TOKEN: z.string().optional(),
   DISCORD_GUILD_ID: z.string().optional(),
 
   // OAuth

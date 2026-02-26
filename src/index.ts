@@ -30,13 +30,12 @@ async function main() {
     process.exit(1);
   }
 
-  // Start Discord bot
+  // Start Discord bot (optional)
   try {
     await discordClient.login();
     logger.info('Discord bot logged in');
   } catch (error) {
-    logger.error('Failed to login Discord bot', { error: String(error) });
-    process.exit(1);
+    logger.warn('Discord bot not logged in - skipping (token not configured)');
   }
 
   // Start web server
