@@ -4,6 +4,7 @@ import { logger } from '../../utils/logger.js';
 export interface AllstarClip {
   id: string;
   status: string;
+  type: string;
   title?: string;
   thumbnailUrl?: string;
   videoUrl?: string;
@@ -14,6 +15,18 @@ export interface AllstarClip {
 export interface AllstarCreateClipResponse {
   id: string;
   status: string;
+}
+
+export interface AllstarRequestClipsRequest {
+  platform: string;
+  platformAccountId: string;
+  gameTitle: string;
+  matchId: string;
+}
+
+export interface AllstarRequestClipsResponse {
+  clips: AllstarClip[];
+  requestId: string;
 }
 
 export interface AllstarGetClipsResponse {
@@ -137,6 +150,47 @@ export class AllstarClient {
       logger.error('Allstar API error', { error: String(error) });
       throw new AllstarError(String(error), 'REQUEST_FAILED');
     }
+  }
+
+  async requestClips(request: AllstarRequestClipsRequest): Promise<AllstarRequestClipsResponse> {
+    if (!this.apiKey) {
+      throw new AllstarError('Allstar API key not configured', 'NOT_CONFIGURED');
+    }
+
+    const url = `${this.baseUrl}/v2/clips/request`;
+
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: this.getHeaders(),
+        body: JSON.stringify(request),
+      });
+
+      if (!response.ok) {
+        throw new AllstarError('Failed to request clips', 'REQUEST_FAILED', response.status);
+      }
+
+      const data = await response.json() as AllstarRequestClipsResponse;
+      return data;
+    } catch (error) {
+      if (error instanceof AllstarError) throw error;
+      logger.error('Allstar API error', { error: String(error) });
+      throw new AllstarError(String(error), 'REQUEST_FAILED');
+    }
+  }
+
+  async getClipStatus(clipId: string): Promise<{ status: string; videoUrl?: string; thumbnailUrl?: string; duration?: number }> {
+    const clip = await this.getClip(clipId);
+    if (!clip) {
+      throw new AllstarError('Clip not found', 'NOT_FOUND', 404);
+    }
+
+    return {
+      status: clip.status,
+      videoUrl: clip.videoUrl,
+      thumbnailUrl: clip.thumbnailUrl,
+      duration: clip.duration,
+    };
   }
 }
 
