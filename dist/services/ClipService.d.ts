@@ -1,7 +1,20 @@
 import { ClipStatus, ClipType } from '../types/index.js';
-import type { ClipRecord } from '../types/index.js';
+import type { ClipRecord, MatchRecord } from '../types/index.js';
+export interface CreateClipData {
+    matchId: string;
+    userId: string;
+    allstarClipId: string;
+    type: ClipType;
+    title?: string;
+    thumbnailUrl?: string;
+    videoUrl?: string;
+    duration?: number;
+    metadata?: Record<string, unknown>;
+}
 export declare class ClipService {
-    createClip(matchId: string, userId: string, allstarClipId: string, type: ClipType, metadata?: Record<string, unknown>): Promise<ClipRecord>;
+    createClip(data: CreateClipData): Promise<ClipRecord>;
+    getMatchById(matchId: string): Promise<MatchRecord | null>;
+    getClipsByMatchId(matchId: string): Promise<ClipRecord[]>;
     getClipByAllstarId(allstarClipId: string): Promise<ClipRecord | null>;
     getClipById(id: string): Promise<ClipRecord | null>;
     getClipsByMatch(matchId: string): Promise<ClipRecord[]>;

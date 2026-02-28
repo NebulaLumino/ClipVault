@@ -1,5 +1,6 @@
 import prisma from '../db/prisma.js';
 import { logger } from '../utils/logger.js';
+import { MatchStatus } from '../types/index.js';
 export class MatchService {
     async createMatch(userId, platform, gameTitle, matchId, platformMatchId, metadata) {
         const match = await prisma.matchRecord.create({
@@ -9,7 +10,7 @@ export class MatchService {
                 gameTitle,
                 matchId,
                 platformMatchId,
-                status: "detected" /* MatchStatus.DETECTED */,
+                status: MatchStatus.DETECTED,
                 metadata: metadata,
             },
         });
@@ -44,7 +45,7 @@ export class MatchService {
             where: { id },
             data: {
                 status,
-                endedAt: endedAt || (status === "completed" /* MatchStatus.COMPLETED */ ? new Date() : undefined),
+                endedAt: endedAt || (status === MatchStatus.COMPLETED ? new Date() : undefined),
             },
         });
         logger.info('Updated match status', { matchId: id, status });
@@ -65,20 +66,20 @@ export class MatchService {
     async getPendingMatches() {
         const matches = await prisma.matchRecord.findMany({
             where: {
-                status: "detected" /* MatchStatus.DETECTED */,
+                status: MatchStatus.DETECTED,
             },
             orderBy: { createdAt: 'asc' },
         });
         return matches;
     }
     async markMatchProcessing(id) {
-        return this.updateMatchStatus(id, "processing" /* MatchStatus.PROCESSING */);
+        return this.updateMatchStatus(id, MatchStatus.PROCESSING);
     }
     async markMatchCompleted(id) {
-        return this.updateMatchStatus(id, "completed" /* MatchStatus.COMPLETED */, new Date());
+        return this.updateMatchStatus(id, MatchStatus.COMPLETED, new Date());
     }
     async markMatchFailed(id) {
-        return this.updateMatchStatus(id, "failed" /* MatchStatus.FAILED */);
+        return this.updateMatchStatus(id, MatchStatus.FAILED);
     }
 }
 export const matchService = new MatchService();

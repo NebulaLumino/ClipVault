@@ -1,5 +1,5 @@
-import { config } from '../../config/index.js';
-import { logger } from '../../utils/logger.js';
+import { config } from "../../config/index.js";
+import { logger } from "../../utils/logger.js";
 
 export interface FortniteProfile {
   id: string;
@@ -24,10 +24,10 @@ export class EpicError extends Error {
   constructor(
     message: string,
     public code?: string,
-    public statusCode?: number
+    public statusCode?: number,
   ) {
     super(message);
-    this.name = 'EpicError';
+    this.name = "EpicError";
   }
 }
 
@@ -36,11 +36,11 @@ export class EpicClient {
   private readonly clientSecret: string;
 
   constructor() {
-    this.clientId = config.EPIC_CLIENT_ID || '';
-    this.clientSecret = config.EPIC_CLIENT_SECRET || '';
-    
+    this.clientId = config.EPIC_CLIENT_ID || "";
+    this.clientSecret = config.EPIC_CLIENT_SECRET || "";
+
     if (!this.clientId) {
-      logger.warn('Epic Games client credentials not configured');
+      logger.warn("Epic Games client credentials not configured");
     }
   }
 
@@ -49,18 +49,22 @@ export class EpicClient {
 
     try {
       const response = await fetch(url);
-      
+
       if (!response.ok) {
         if (response.status === 404) return null;
-        throw new EpicError('Failed to fetch profile', 'REQUEST_FAILED', response.status);
+        throw new EpicError(
+          "Failed to fetch profile",
+          "REQUEST_FAILED",
+          response.status,
+        );
       }
 
-      const data = await response.json() as { data?: FortniteProfile };
+      const data = (await response.json()) as { data?: FortniteProfile };
       return data.data || null;
     } catch (error) {
       if (error instanceof EpicError) throw error;
-      logger.error('Epic Games API error', { error: String(error) });
-      throw new EpicError(String(error), 'REQUEST_FAILED');
+      logger.error("Epic Games API error", { error: String(error) });
+      throw new EpicError(String(error), "REQUEST_FAILED");
     }
   }
 
@@ -69,19 +73,42 @@ export class EpicClient {
 
     try {
       const response = await fetch(url);
-      
+
       if (!response.ok) {
         if (response.status === 404) return null;
-        throw new EpicError('Failed to fetch stats', 'REQUEST_FAILED', response.status);
+        throw new EpicError(
+          "Failed to fetch stats",
+          "REQUEST_FAILED",
+          response.status,
+        );
       }
 
-      const data = await response.json() as { data?: { stats?: FortniteStats } };
+      const data = (await response.json()) as {
+        data?: { stats?: FortniteStats };
+      };
       return data.data?.stats || null;
     } catch (error) {
       if (error instanceof EpicError) throw error;
-      logger.error('Epic Games API error', { error: String(error) });
-      throw new EpicError(String(error), 'REQUEST_FAILED');
+      logger.error("Epic Games API error", { error: String(error) });
+      throw new EpicError(String(error), "REQUEST_FAILED");
     }
+  }
+
+  async getPlayerStats(
+    epicId: string,
+  ): Promise<{ matchesPlayed: number; wins: number; kills: number } | null> {
+    const stats = await this.getFortniteStats(epicId);
+    if (!stats) return null;
+
+    return {
+      matchesPlayed: stats.br.matchesPlayed,
+      wins: stats.br.wins,
+      kills: stats.br.kills,
+    };
+  }
+
+  isValidEpicId(epicId: string): boolean {
+    return /^[0-9a-f]{32}$/i.test(epicId);
   }
 }
 

@@ -3,6 +3,9 @@ import { logger } from './utils/logger.js';
 import { discordClient } from './discord/client.js';
 import { startWebServer } from './web/server.js';
 import { createMatchPollWorker } from './jobs/matchPoll.worker.js';
+import { createClipRequestWorker } from './jobs/clipRequest.worker.js';
+import { createClipMonitorWorker } from './jobs/clipMonitor.worker.js';
+import { createClipDeliveryWorker } from './jobs/clipDelivery.worker.js';
 import prisma from './db/prisma.js';
 import { redis } from './db/redis.js';
 async function main() {
@@ -25,14 +28,13 @@ async function main() {
         logger.error('Failed to connect to Redis', { error: String(error) });
         process.exit(1);
     }
-    // Start Discord bot
+    // Start Discord bot (optional)
     try {
         await discordClient.login();
         logger.info('Discord bot logged in');
     }
     catch (error) {
-        logger.error('Failed to login Discord bot', { error: String(error) });
-        process.exit(1);
+        logger.warn('Discord bot not logged in - skipping (token not configured)');
     }
     // Start web server
     try {
@@ -46,6 +48,9 @@ async function main() {
     // Start workers
     try {
         createMatchPollWorker();
+        createClipRequestWorker();
+        createClipMonitorWorker();
+        createClipDeliveryWorker();
         logger.info('Workers started');
     }
     catch (error) {

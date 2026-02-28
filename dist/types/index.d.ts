@@ -1,61 +1,72 @@
-export declare const enum GamePlatform {
-    CS2 = "cs2",
-    LEAGUE_OF_LEGENDS = "lol",
-    DOTA2 = "dota2",
-    FORTNITE = "fortnite"
-}
-export declare const enum GameTitle {
-    CS2 = "Counter-Strike 2",
-    LOL = "League of Legends",
-    DOTA2 = "Dota 2",
-    FORTNITE = "Fortnite"
-}
-export declare enum PlatformType {
-    STEAM = "steam",
-    RIOT = "riot",
-    EPIC = "epic",
-    DISCORD = "discord"
-}
-export declare const enum AccountLinkStatus {
-    PENDING = "pending",
-    LINKED = "linked",
-    EXPIRED = "expired",
-    ERROR = "error"
-}
-export declare const enum MatchStatus {
-    DETECTED = "detected",
-    PROCESSING = "processing",
-    COMPLETED = "completed",
-    FAILED = "failed",
-    EXPIRED = "expired"
-}
-export declare const enum ClipStatus {
-    REQUESTED = "requested",
-    PROCESSING = "processing",
-    READY = "ready",
-    DELIVERED = "delivered",
-    FAILED = "failed",
-    EXPIRED = "expired"
-}
-export declare const enum ClipType {
-    HIGHLIGHT = "highlight",
-    PLAY_OF_THE_GAME = "play_of_the_game",
-    MOMENT = "moment",
-    KILL = "kill",
-    DEATH = "death",
-    ASSIST = "assist",
-    ACE = "ace",
-    CLUTCH = "clutch"
-}
-export declare const enum DeliveryMethod {
-    DM = "dm",
-    CHANNEL = "channel"
-}
-export declare const enum DeliveryStatus {
-    PENDING = "pending",
-    SENT = "sent",
-    FAILED = "failed"
-}
+import { PlatformType as PrismaPlatformType, AccountLinkStatus as PrismaAccountLinkStatus, GamePlatform as PrismaGamePlatform, MatchStatus as PrismaMatchStatus, ClipStatus as PrismaClipStatus, ClipType as PrismaClipType, DeliveryMethod as PrismaDeliveryMethod, DeliveryStatus as PrismaDeliveryStatus, Prisma } from "@prisma/client";
+export declare const PlatformType: {
+    STEAM: PrismaPlatformType;
+    RIOT: PrismaPlatformType;
+    EPIC: PrismaPlatformType;
+    DISCORD: PrismaPlatformType;
+    FACEIT: PrismaPlatformType;
+};
+export type PlatformType = PrismaPlatformType;
+export declare const AccountLinkStatus: {
+    PENDING: PrismaAccountLinkStatus;
+    LINKED: PrismaAccountLinkStatus;
+    EXPIRED: PrismaAccountLinkStatus;
+    ERROR: PrismaAccountLinkStatus;
+};
+export type AccountLinkStatus = PrismaAccountLinkStatus;
+export declare const GamePlatform: {
+    CS2: PrismaGamePlatform;
+    LEAGUE_OF_LEGENDS: PrismaGamePlatform;
+    DOTA2: PrismaGamePlatform;
+    FORTNITE: PrismaGamePlatform;
+};
+export type GamePlatform = PrismaGamePlatform;
+export declare const GameTitle: {
+    readonly CS2: "Counter-Strike 2";
+    readonly LOL: "League of Legends";
+    readonly DOTA2: "Dota 2";
+    readonly FORTNITE: "Fortnite";
+};
+export type GameTitle = (typeof GameTitle)[keyof typeof GameTitle];
+export declare const MatchStatus: {
+    DETECTED: PrismaMatchStatus;
+    PROCESSING: PrismaMatchStatus;
+    COMPLETED: PrismaMatchStatus;
+    FAILED: PrismaMatchStatus;
+    EXPIRED: PrismaMatchStatus;
+};
+export type MatchStatus = PrismaMatchStatus;
+export declare const ClipStatus: {
+    REQUESTED: PrismaClipStatus;
+    PROCESSING: PrismaClipStatus;
+    READY: PrismaClipStatus;
+    DELIVERED: PrismaClipStatus;
+    FAILED: PrismaClipStatus;
+    EXPIRED: PrismaClipStatus;
+};
+export type ClipStatus = PrismaClipStatus;
+export declare const ClipType: {
+    HIGHLIGHT: PrismaClipType;
+    PLAY_OF_THE_GAME: PrismaClipType;
+    MOMENT: PrismaClipType;
+    KILL: PrismaClipType;
+    DEATH: PrismaClipType;
+    ASSIST: PrismaClipType;
+    ACE: PrismaClipType;
+    CLUTCH: PrismaClipType;
+};
+export type ClipType = PrismaClipType;
+export declare const DeliveryMethod: {
+    DM: PrismaDeliveryMethod;
+    CHANNEL: PrismaDeliveryMethod;
+};
+export type DeliveryMethod = PrismaDeliveryMethod;
+export declare const DeliveryStatus: {
+    PENDING: PrismaDeliveryStatus;
+    SENT: PrismaDeliveryStatus;
+    FAILED: PrismaDeliveryStatus;
+};
+export type DeliveryStatus = PrismaDeliveryStatus;
 export interface UserPreferences {
     userId: string;
     deliveryMethod: DeliveryMethod;
@@ -95,9 +106,9 @@ export interface MatchRecord {
     matchId: string;
     platformMatchId: string;
     status: MatchStatus;
-    startedAt?: Date;
-    endedAt?: Date;
-    metadata?: Record<string, unknown>;
+    startedAt?: Date | null;
+    endedAt?: Date | null;
+    metadata?: Prisma.JsonValue;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -107,15 +118,15 @@ export interface ClipRecord {
     userId: string;
     allstarClipId: string;
     type: ClipType;
-    title?: string;
-    thumbnailUrl?: string;
-    videoUrl?: string;
-    duration?: number;
+    title?: string | null;
+    thumbnailUrl?: string | null;
+    videoUrl?: string | null;
+    duration?: number | null;
     status: ClipStatus;
-    requestedAt?: Date;
-    readyAt?: Date;
-    deliveredAt?: Date;
-    metadata?: Record<string, unknown>;
+    requestedAt?: Date | null;
+    readyAt?: Date | null;
+    deliveredAt?: Date | null;
+    metadata?: Prisma.JsonValue;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -139,17 +150,19 @@ export interface MatchPollJobData {
 export interface ClipRequestJobData {
     matchId: string;
     userId: string;
-    platform: PlatformType;
+    platform: string;
+    platformAccountId: string;
     platformMatchId: string;
+    gameTitle: GamePlatform;
 }
 export interface ClipMonitorJobData {
+    clipId: string;
     matchId: string;
-    clipRequestId: string;
 }
 export interface ClipDeliveryJobData {
     clipId: string;
     userId: string;
-    matchId: string;
+    matchId?: string;
 }
 export interface MatchInfo {
     matchId: string;

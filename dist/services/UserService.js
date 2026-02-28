@@ -1,5 +1,6 @@
 import prisma from '../db/prisma.js';
 import { logger } from '../utils/logger.js';
+import { DeliveryMethod, ClipType } from '../types/index.js';
 export class UserService {
     async getOrCreateUser(discordId, username, globalName, avatarUrl) {
         let user = await prisma.user.findUnique({
@@ -44,13 +45,13 @@ export class UserService {
         });
         const defaultPreferences = {
             userId,
-            deliveryMethod: "dm" /* DeliveryMethod.DM */,
+            deliveryMethod: DeliveryMethod.DM,
             quietHoursEnabled: false,
             preferredClipTypes: [
-                "highlight" /* ClipType.HIGHLIGHT */,
-                "play_of_the_game" /* ClipType.PLAY_OF_THE_GAME */,
-                "ace" /* ClipType.ACE */,
-                "clutch" /* ClipType.CLUTCH */,
+                ClipType.HIGHLIGHT,
+                ClipType.PLAY_OF_THE_GAME,
+                ClipType.ACE,
+                ClipType.CLUTCH,
             ],
             notificationsEnabled: true,
         };

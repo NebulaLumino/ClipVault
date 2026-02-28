@@ -2,7 +2,7 @@ import { Worker } from 'bullmq';
 import { logger } from '../utils/logger.js';
 import { accountService } from '../services/AccountService.js';
 import { matchService } from '../services/MatchService.js';
-import { PlatformType } from '../types/index.js';
+import { PlatformType, GamePlatform } from '../types/index.js';
 export function createMatchPollWorker() {
     const worker = new Worker('match-poll', async (job) => {
         const { linkedAccountId, platform, platformAccountId } = job.data;
@@ -50,16 +50,16 @@ export function createMatchPollWorker() {
                 let gameTitle;
                 switch (platform) {
                     case 'steam':
-                        gameTitle = "cs2" /* GamePlatform.CS2 */; // Could also be Dota2
+                        gameTitle = GamePlatform.CS2; // Could also be Dota2
                         break;
                     case 'riot':
-                        gameTitle = "lol" /* GamePlatform.LEAGUE_OF_LEGENDS */;
+                        gameTitle = GamePlatform.LEAGUE_OF_LEGENDS;
                         break;
                     case 'epic':
-                        gameTitle = "fortnite" /* GamePlatform.FORTNITE */;
+                        gameTitle = GamePlatform.FORTNITE;
                         break;
                     default:
-                        gameTitle = "cs2" /* GamePlatform.CS2 */;
+                        gameTitle = GamePlatform.CS2;
                 }
                 // Create match records
                 for (const match of newMatches) {

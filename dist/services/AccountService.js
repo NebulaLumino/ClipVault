@@ -1,6 +1,6 @@
 import prisma from '../db/prisma.js';
 import { logger } from '../utils/logger.js';
-import { PlatformType } from '../types/index.js';
+import { PlatformType, AccountLinkStatus } from '../types/index.js';
 import { steamClient } from '../integrations/steam/SteamClient.js';
 import { riotClient } from '../integrations/riot/RiotClient.js';
 export class AccountService {
@@ -21,7 +21,7 @@ export class AccountService {
                 data: {
                     platformAccountId,
                     platformUsername,
-                    status: "linked" /* AccountLinkStatus.LINKED */,
+                    status: AccountLinkStatus.LINKED,
                     accessToken,
                     refreshToken,
                     tokenExpiry,
@@ -38,7 +38,7 @@ export class AccountService {
                 platform,
                 platformAccountId,
                 platformUsername,
-                status: "linked" /* AccountLinkStatus.LINKED */,
+                status: AccountLinkStatus.LINKED,
                 accessToken,
                 refreshToken,
                 tokenExpiry,
@@ -118,7 +118,7 @@ export class AccountService {
     async getAccountsToPoll() {
         const accounts = await prisma.linkedAccount.findMany({
             where: {
-                status: "linked" /* AccountLinkStatus.LINKED */,
+                status: AccountLinkStatus.LINKED,
                 pollState: {
                     pollingEnabled: true,
                 },
@@ -131,7 +131,7 @@ export class AccountService {
         const accounts = await prisma.linkedAccount.findMany({
             where: {
                 platform,
-                status: "linked" /* AccountLinkStatus.LINKED */,
+                status: AccountLinkStatus.LINKED,
             },
             include: { pollState: true },
         });

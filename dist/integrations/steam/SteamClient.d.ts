@@ -8,11 +8,21 @@ export interface SteamPlayer {
 export interface CS2Match {
     matchid: string;
     matchtime: number;
-    result: 'win' | 'loss' | 'draw';
+    result: "win" | "loss" | "draw";
     score?: {
         team1: number;
         team2: number;
     };
+}
+export interface Dota2Match {
+    matchid: string;
+    matchtime: number;
+    result: "win" | "loss" | "draw";
+    hero?: number;
+    kills?: number;
+    deaths?: number;
+    assists?: number;
+    duration?: number;
 }
 export declare class SteamError extends Error {
     code?: string | undefined;
@@ -27,6 +37,8 @@ export declare class SteamClient {
     getCS2MatchHistory(steamId: string, limit?: number): Promise<CS2Match[]>;
     resolveVanityUrl(vanityUrl: string): Promise<string | null>;
     isValidSteam64Id(steamId: string): boolean;
+    getDota2MatchHistory(steamId: string, limit?: number): Promise<Dota2Match[]>;
+    convertSteam64ToSteam32(steam64: string): string;
 }
 export declare const steamClient: SteamClient;
 //# sourceMappingURL=SteamClient.d.ts.map

@@ -26,6 +26,12 @@ export declare class EpicClient {
     constructor();
     getFortniteProfile(epicId: string): Promise<FortniteProfile | null>;
     getFortniteStats(epicId: string): Promise<FortniteStats | null>;
+    getPlayerStats(epicId: string): Promise<{
+        matchesPlayed: number;
+        wins: number;
+        kills: number;
+    } | null>;
+    isValidEpicId(epicId: string): boolean;
 }
 export declare const epicClient: EpicClient;
 //# sourceMappingURL=EpicClient.d.ts.map

@@ -1,80 +1,92 @@
-// Supported game platforms
-export const enum GamePlatform {
-  CS2 = 'cs2',
-  LEAGUE_OF_LEGENDS = 'lol',
-  DOTA2 = 'dota2',
-  FORTNITE = 'fortnite',
-}
+import {
+  PlatformType as PrismaPlatformType,
+  AccountLinkStatus as PrismaAccountLinkStatus,
+  GamePlatform as PrismaGamePlatform,
+  MatchStatus as PrismaMatchStatus,
+  ClipStatus as PrismaClipStatus,
+  ClipType as PrismaClipType,
+  DeliveryMethod as PrismaDeliveryMethod,
+  DeliveryStatus as PrismaDeliveryStatus,
+  Prisma,
+} from "@prisma/client";
 
-// Supported game titles
-export const enum GameTitle {
-  CS2 = 'Counter-Strike 2',
-  LOL = 'League of Legends',
-  DOTA2 = 'Dota 2',
-  FORTNITE = 'Fortnite',
-}
+export const PlatformType = {
+  STEAM: "steam" as PrismaPlatformType,
+  RIOT: "riot" as PrismaPlatformType,
+  EPIC: "epic" as PrismaPlatformType,
+  DISCORD: "discord" as PrismaPlatformType,
+  FACEIT: "faceit" as PrismaPlatformType,
+};
+export type PlatformType = PrismaPlatformType;
 
-// Platform account types - as enum for runtime use
-export enum PlatformType {
-  STEAM = 'steam',
-  RIOT = 'riot',
-  EPIC = 'epic',
-  DISCORD = 'discord',
-}
+export const AccountLinkStatus = {
+  PENDING: "pending" as PrismaAccountLinkStatus,
+  LINKED: "linked" as PrismaAccountLinkStatus,
+  EXPIRED: "expired" as PrismaAccountLinkStatus,
+  ERROR: "error" as PrismaAccountLinkStatus,
+};
+export type AccountLinkStatus = PrismaAccountLinkStatus;
 
-// Account linking status
-export const enum AccountLinkStatus {
-  PENDING = 'pending',
-  LINKED = 'linked',
-  EXPIRED = 'expired',
-  ERROR = 'error',
-}
+export const GamePlatform = {
+  CS2: "cs2" as PrismaGamePlatform,
+  LEAGUE_OF_LEGENDS: "lol" as PrismaGamePlatform,
+  DOTA2: "dota2" as PrismaGamePlatform,
+  FORTNITE: "fortnite" as PrismaGamePlatform,
+};
+export type GamePlatform = PrismaGamePlatform;
 
-// Match status
-export const enum MatchStatus {
-  DETECTED = 'detected',
-  PROCESSING = 'processing',
-  COMPLETED = 'completed',
-  FAILED = 'failed',
-  EXPIRED = 'expired',
-}
+export const GameTitle = {
+  CS2: "Counter-Strike 2",
+  LOL: "League of Legends",
+  DOTA2: "Dota 2",
+  FORTNITE: "Fortnite",
+} as const;
+export type GameTitle = (typeof GameTitle)[keyof typeof GameTitle];
 
-// Clip status
-export const enum ClipStatus {
-  REQUESTED = 'requested',
-  PROCESSING = 'processing',
-  READY = 'ready',
-  DELIVERED = 'delivered',
-  FAILED = 'failed',
-  EXPIRED = 'expired',
-}
+export const MatchStatus = {
+  DETECTED: "detected" as PrismaMatchStatus,
+  PROCESSING: "processing" as PrismaMatchStatus,
+  COMPLETED: "completed" as PrismaMatchStatus,
+  FAILED: "failed" as PrismaMatchStatus,
+  EXPIRED: "expired" as PrismaMatchStatus,
+};
+export type MatchStatus = PrismaMatchStatus;
 
-// Clip types
-export const enum ClipType {
-  HIGHLIGHT = 'highlight',
-  PLAY_OF_THE_GAME = 'play_of_the_game',
-  MOMENT = 'moment',
-  KILL = 'kill',
-  DEATH = 'death',
-  ASSIST = 'assist',
-  ACE = 'ace',
-  CLUTCH = 'clutch',
-}
+export const ClipStatus = {
+  REQUESTED: "requested" as PrismaClipStatus,
+  PROCESSING: "processing" as PrismaClipStatus,
+  READY: "ready" as PrismaClipStatus,
+  DELIVERED: "delivered" as PrismaClipStatus,
+  FAILED: "failed" as PrismaClipStatus,
+  EXPIRED: "expired" as PrismaClipStatus,
+};
+export type ClipStatus = PrismaClipStatus;
 
-// Delivery method
-export const enum DeliveryMethod {
-  DM = 'dm',
-  CHANNEL = 'channel',
-}
+export const ClipType = {
+  HIGHLIGHT: "highlight" as PrismaClipType,
+  PLAY_OF_THE_GAME: "play_of_the_game" as PrismaClipType,
+  MOMENT: "moment" as PrismaClipType,
+  KILL: "kill" as PrismaClipType,
+  DEATH: "death" as PrismaClipType,
+  ASSIST: "assist" as PrismaClipType,
+  ACE: "ace" as PrismaClipType,
+  CLUTCH: "clutch" as PrismaClipType,
+};
+export type ClipType = PrismaClipType;
 
-// Delivery status
-export const enum DeliveryStatus {
-  PENDING = 'pending',
-  SENT = 'sent',
-  FAILED = 'failed',
-}
+export const DeliveryMethod = {
+  DM: "dm" as PrismaDeliveryMethod,
+  CHANNEL: "channel" as PrismaDeliveryMethod,
+};
+export type DeliveryMethod = PrismaDeliveryMethod;
 
-// User preferences interface
+export const DeliveryStatus = {
+  PENDING: "pending" as PrismaDeliveryStatus,
+  SENT: "sent" as PrismaDeliveryStatus,
+  FAILED: "failed" as PrismaDeliveryStatus,
+};
+export type DeliveryStatus = PrismaDeliveryStatus;
+
 export interface UserPreferences {
   userId: string;
   deliveryMethod: DeliveryMethod;
@@ -86,7 +98,6 @@ export interface UserPreferences {
   notificationsEnabled: boolean;
 }
 
-// Linked account interface
 export interface LinkedAccount {
   id: string;
   userId: string;
@@ -110,7 +121,6 @@ export interface PollState {
   pollingEnabled: boolean;
 }
 
-// Match record interface
 export interface MatchRecord {
   id: string;
   userId: string;
@@ -119,34 +129,32 @@ export interface MatchRecord {
   matchId: string;
   platformMatchId: string;
   status: MatchStatus;
-  startedAt?: Date;
-  endedAt?: Date;
-  metadata?: Record<string, unknown>;
+  startedAt?: Date | null;
+  endedAt?: Date | null;
+  metadata?: Prisma.JsonValue;
   createdAt: Date;
   updatedAt: Date;
 }
 
-// Clip record interface
 export interface ClipRecord {
   id: string;
   matchId: string;
   userId: string;
   allstarClipId: string;
   type: ClipType;
-  title?: string;
-  thumbnailUrl?: string;
-  videoUrl?: string;
-  duration?: number;
+  title?: string | null;
+  thumbnailUrl?: string | null;
+  videoUrl?: string | null;
+  duration?: number | null;
   status: ClipStatus;
-  requestedAt?: Date;
-  readyAt?: Date;
-  deliveredAt?: Date;
-  metadata?: Record<string, unknown>;
+  requestedAt?: Date | null;
+  readyAt?: Date | null;
+  deliveredAt?: Date | null;
+  metadata?: Prisma.JsonValue;
   createdAt: Date;
   updatedAt: Date;
 }
 
-// Delivery record interface
 export interface DeliveryRecord {
   id: string;
   clipId: string;
@@ -160,7 +168,6 @@ export interface DeliveryRecord {
   updatedAt: Date;
 }
 
-// Job data types
 export interface MatchPollJobData {
   linkedAccountId: string;
   platform: PlatformType;
@@ -187,7 +194,6 @@ export interface ClipDeliveryJobData {
   matchId?: string;
 }
 
-// Platform match info
 export interface MatchInfo {
   matchId: string;
   matchtime?: number;

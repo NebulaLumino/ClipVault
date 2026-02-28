@@ -1,25 +1,42 @@
 import prisma from '../db/prisma.js';
 import { logger } from '../utils/logger.js';
+import { ClipStatus } from '../types/index.js';
 export class ClipService {
-    async createClip(matchId, userId, allstarClipId, type, metadata) {
+    async createClip(data) {
         const clip = await prisma.clipRecord.create({
             data: {
-                matchId,
-                userId,
-                allstarClipId,
-                type,
-                status: "requested" /* ClipStatus.REQUESTED */,
+                matchId: data.matchId,
+                userId: data.userId,
+                allstarClipId: data.allstarClipId,
+                type: data.type,
+                status: ClipStatus.REQUESTED,
                 requestedAt: new Date(),
-                metadata: metadata,
+                title: data.title,
+                thumbnailUrl: data.thumbnailUrl,
+                videoUrl: data.videoUrl,
+                duration: data.duration,
+                metadata: data.metadata,
             },
         });
         logger.info('Created clip record', {
-            matchId,
+            matchId: data.matchId,
             clipId: clip.id,
-            allstarClipId,
-            type
+            allstarClipId: data.allstarClipId,
+            type: data.type
         });
         return clip;
+    }
+    async getMatchById(matchId) {
+        const match = await prisma.matchRecord.findUnique({
+            where: { id: matchId },
+        });
+        return match;
+    }
+    async getClipsByMatchId(matchId) {
+        const clips = await prisma.clipRecord.findMany({
+            where: { matchId },
+        });
+        return clips;
     }
     async getClipByAllstarId(allstarClipId) {
         const clip = await prisma.clipRecord.findUnique({
@@ -54,7 +71,7 @@ export class ClipService {
     async getReadyClips() {
         const clips = await prisma.clipRecord.findMany({
             where: {
-                status: "ready" /* ClipStatus.READY */,
+                status: ClipStatus.READY,
             },
             orderBy: { readyAt: 'asc' },
         });
@@ -65,13 +82,13 @@ export class ClipService {
             where: { id },
             data: {
                 status,
-                ...(status === "ready" /* ClipStatus.READY */ && { readyAt: new Date() }),
-                ...(status === "delivered" /* ClipStatus.DELIVERED */ && { deliveredAt: new Date() }),
+                ...(status === ClipStatus.READY && { readyAt: new Date() }),
+                ...(status === ClipStatus.DELIVERED && { deliveredAt: new Date() }),
                 ...(data && {
-                    thumbnailUrl: data.thumbnailUrl,
-                    videoUrl: data.videoUrl,
-                    duration: data.duration,
-                    title: data.title,
+                    ...(data.thumbnailUrl && { thumbnailUrl: data.thumbnailUrl }),
+                    ...(data.videoUrl && { videoUrl: data.videoUrl }),
+                    ...(data.duration && { duration: data.duration }),
+                    ...(data.title && { title: data.title }),
                 }),
             },
         });
@@ -79,13 +96,13 @@ export class ClipService {
         return clip;
     }
     async markClipReady(id, data) {
-        return this.updateClipStatus(id, "ready" /* ClipStatus.READY */, data);
+        return this.updateClipStatus(id, ClipStatus.READY, data);
     }
     async markClipDelivered(id) {
-        return this.updateClipStatus(id, "delivered" /* ClipStatus.DELIVERED */);
+        return this.updateClipStatus(id, ClipStatus.DELIVERED);
     }
     async markClipFailed(id) {
-        return this.updateClipStatus(id, "failed" /* ClipStatus.FAILED */);
+        return this.updateClipStatus(id, ClipStatus.FAILED);
     }
 }
 export const clipService = new ClipService();

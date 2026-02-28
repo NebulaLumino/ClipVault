@@ -1,6 +1,7 @@
 import prisma from '../db/prisma.js';
 import { logger } from '../utils/logger.js';
 import { discordClient } from '../discord/client.js';
+import { DeliveryMethod, DeliveryStatus, ClipStatus } from '../types/index.js';
 export class DeliveryService {
     async createDelivery(clipId, userId, recipientId, method) {
         const delivery = await prisma.deliveryRecord.create({
@@ -9,7 +10,7 @@ export class DeliveryService {
                 userId,
                 recipientId,
                 method,
-                status: "pending" /* DeliveryStatus.PENDING */,
+                status: DeliveryStatus.PENDING,
             },
         });
         logger.info('Created delivery record', {
@@ -26,7 +27,7 @@ export class DeliveryService {
             where: { id: clipId },
             include: { match: true },
         });
-        if (!clip || clip.status !== "ready" /* ClipStatus.READY */) {
+        if (!clip || clip.status !== ClipStatus.READY) {
             logger.warn('Clip not ready for delivery', { clipId, status: clip?.status });
             return false;
         }
@@ -36,16 +37,16 @@ export class DeliveryService {
             select: { preferences: true },
         });
         const preferences = user?.preferences;
-        const method = preferences?.deliveryMethod || "dm" /* DeliveryMethod.DM */;
+        const method = preferences?.deliveryMethod || DeliveryMethod.DM;
         const channelId = preferences?.channelId;
         let recipientId = userId;
-        if (method === "channel" /* DeliveryMethod.CHANNEL */ && channelId) {
+        if (method === DeliveryMethod.CHANNEL && channelId) {
             recipientId = channelId;
         }
         const delivery = await this.createDelivery(clipId, userId, recipientId, method);
         try {
             const message = this.formatClipMessage(clip);
-            if (method === "dm" /* DeliveryMethod.DM */) {
+            if (method === DeliveryMethod.DM) {
                 const result = await discordClient.sendDM(recipientId, message);
                 if (!result) {
                     throw new Error('Failed to send DM');
@@ -64,7 +65,7 @@ export class DeliveryService {
             await prisma.deliveryRecord.update({
                 where: { id: delivery.id },
                 data: {
-                    status: "sent" /* DeliveryStatus.SENT */,
+                    status: DeliveryStatus.SENT,
                     sentAt: new Date(),
                 },
             });
@@ -72,7 +73,7 @@ export class DeliveryService {
             await prisma.clipRecord.update({
                 where: { id: clipId },
                 data: {
-                    status: "delivered" /* ClipStatus.DELIVERED */,
+                    status: ClipStatus.DELIVERED,
                     deliveredAt: new Date(),
                 },
             });
@@ -83,7 +84,7 @@ export class DeliveryService {
             await prisma.deliveryRecord.update({
                 where: { id: delivery.id },
                 data: {
-                    status: "failed" /* DeliveryStatus.FAILED */,
+                    status: DeliveryStatus.FAILED,
                     error: String(error),
                 },
             });

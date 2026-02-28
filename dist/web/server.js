@@ -82,15 +82,25 @@ fastify.post('/webhooks/allstar', async (request, reply) => {
 });
 // Start server
 export async function startWebServer() {
-    try {
-        await fastify.listen({ port: config.PORT, host: '0.0.0.0' });
-        logger.info(`Web server listening on port ${config.PORT}`);
-        return fastify;
+    // Try primary port first, fall back to alternative if in use
+    const portsToTry = [config.PORT, config.PORT + 1, config.PORT + 2];
+    for (const port of portsToTry) {
+        try {
+            await fastify.listen({ port, host: '0.0.0.0' });
+            logger.info(`Web server listening on port ${port}`);
+            return fastify;
+        }
+        catch (err) {
+            const error = err;
+            if (error.code === 'EADDRINUSE') {
+                logger.warn(`Port ${port} in use, trying next port`);
+                continue;
+            }
+            logger.error('Failed to start web server', { error: String(err) });
+            throw err;
+        }
     }
-    catch (err) {
-        logger.error('Failed to start web server', { error: String(err) });
-        throw err;
-    }
+    throw new Error('No available ports found');
 }
 export { fastify };
 //# sourceMappingURL=server.js.map
