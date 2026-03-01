@@ -23,12 +23,11 @@ async function main() {
 
   // Connect to Redis
   try {
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise(resolve => setTimeout(resolve, 1000));
     await redis.ping();
     logger.info('Redis connected');
   } catch (error) {
-    logger.error('Failed to connect to Redis', { error: String(error) });
-    process.exit(1);
+    logger.warn('Failed to connect to Redis - continuing anyway', { error: String(error) });
   }
 
   // Start Discord bot (optional)
