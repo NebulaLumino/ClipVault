@@ -1,5 +1,6 @@
 import { Queue, Worker } from 'bullmq';
 import redis from '../db/redis.js';
+import { config } from '../config/index.js';
 import { logger } from '../utils/logger.js';
 
 // Queue names
@@ -10,9 +11,15 @@ export const QUEUES = {
   CLIP_DELIVERY: 'clip-delivery',
 } as const;
 
+const connectionOptions = {
+  host: config.REDIS_HOST,
+  port: config.REDIS_PORT,
+  password: config.REDIS_PASSWORD || undefined,
+};
+
 // Create queues
 export const matchPollQueue = new Queue(QUEUES.MATCH_POLL, {
-  connection: redis,
+  connection: connectionOptions,
   defaultJobOptions: {
     removeOnComplete: 100,
     removeOnFail: 50,
@@ -25,7 +32,7 @@ export const matchPollQueue = new Queue(QUEUES.MATCH_POLL, {
 });
 
 export const clipRequestQueue = new Queue(QUEUES.CLIP_REQUEST, {
-  connection: redis,
+  connection: connectionOptions,
   defaultJobOptions: {
     removeOnComplete: 50,
     removeOnFail: 25,
@@ -38,7 +45,7 @@ export const clipRequestQueue = new Queue(QUEUES.CLIP_REQUEST, {
 });
 
 export const clipMonitorQueue = new Queue(QUEUES.CLIP_MONITOR, {
-  connection: redis,
+  connection: connectionOptions,
   defaultJobOptions: {
     removeOnComplete: 100,
     removeOnFail: 50,
@@ -51,7 +58,7 @@ export const clipMonitorQueue = new Queue(QUEUES.CLIP_MONITOR, {
 });
 
 export const clipDeliveryQueue = new Queue(QUEUES.CLIP_DELIVERY, {
-  connection: redis,
+  connection: connectionOptions,
   defaultJobOptions: {
     removeOnComplete: 100,
     removeOnFail: 50,
