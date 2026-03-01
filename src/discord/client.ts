@@ -142,6 +142,7 @@ discordClient.on('interactionCreate', async (interaction) => {
         }
         
         if (authUrl) {
+          console.log('[DEBUG] Sending to Discord:', authUrl);
           await interaction.reply({
             content: `Please link your account: ${authUrl}`,
             ephemeral: true,
