@@ -1,0 +1,92 @@
+{
+  "version": 3,
+  "pages404": true,
+  "appType": "app",
+  "caseSensitive": false,
+  "basePath": "",
+  "redirects": [
+    {
+      "source": "/:path+/",
+      "destination": "/:path+",
+      "internal": true,
+      "priority": true,
+      "statusCode": 308,
+      "regex": "^(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))/$"
+    }
+  ],
+  "headers": [],
+  "rewrites": {
+    "beforeFiles": [],
+    "afterFiles": [],
+    "fallback": []
+  },
+  "dynamicRoutes": [],
+  "staticRoutes": [
+    {
+      "page": "/",
+      "regex": "^/(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/(?:/)?$"
+    },
+    {
+      "page": "/_global-error",
+      "regex": "^/_global\\-error(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_global\\-error(?:/)?$"
+    },
+    {
+      "page": "/_not-found",
+      "regex": "^/_not\\-found(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_not\\-found(?:/)?$"
+    },
+    {
+      "page": "/api/auth/epic",
+      "regex": "^/api/auth/epic(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/auth/epic(?:/)?$"
+    },
+    {
+      "page": "/api/auth/riot",
+      "regex": "^/api/auth/riot(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/auth/riot(?:/)?$"
+    },
+    {
+      "page": "/api/auth/steam",
+      "regex": "^/api/auth/steam(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/auth/steam(?:/)?$"
+    },
+    {
+      "page": "/api/webhooks/allstar",
+      "regex": "^/api/webhooks/allstar(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/webhooks/allstar(?:/)?$"
+    },
+    {
+      "page": "/linked",
+      "regex": "^/linked(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/linked(?:/)?$"
+    }
+  ],
+  "dataRoutes": [],
+  "rsc": {
+    "header": "rsc",
+    "varyHeader": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch",
+    "prefetchHeader": "next-router-prefetch",
+    "didPostponeHeader": "x-nextjs-postponed",
+    "contentTypeHeader": "text/x-component",
+    "suffix": ".rsc",
+    "prefetchSegmentHeader": "next-router-segment-prefetch",
+    "prefetchSegmentSuffix": ".segment.rsc",
+    "prefetchSegmentDirSuffix": ".segments",
+    "clientParamParsing": false,
+    "dynamicRSCPrerender": false
+  },
+  "rewriteHeaders": {
+    "pathHeader": "x-nextjs-rewritten-path",
+    "queryHeader": "x-nextjs-rewritten-query"
+  }
+}

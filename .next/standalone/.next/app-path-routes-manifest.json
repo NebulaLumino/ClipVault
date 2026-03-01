@@ -1,0 +1,10 @@
+{
+  "/_global-error/page": "/_global-error",
+  "/_not-found/page": "/_not-found",
+  "/api/auth/epic/route": "/api/auth/epic",
+  "/api/auth/riot/route": "/api/auth/riot",
+  "/api/auth/steam/route": "/api/auth/steam",
+  "/api/webhooks/allstar/route": "/api/webhooks/allstar",
+  "/linked/page": "/linked",
+  "/page": "/"
+}

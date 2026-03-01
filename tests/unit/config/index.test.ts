@@ -59,7 +59,7 @@ describe('Config', () => {
     expect(config.RIOT_API_KEY).toBe('riot-key');
   });
 
-  it('should use OAUTH_REDIRECT_BASE default', async () => {
+  it('should use OAUTH_REDIRECT_BASE from env', async () => {
     vi.stubEnv('DATABASE_URL', 'postgresql://user:pass@localhost:5432/clipvault');
     vi.stubEnv('DISCORD_CLIENT_ID', '123456789');
     vi.stubEnv('DISCORD_CLIENT_SECRET', 'test-secret');
@@ -67,6 +67,6 @@ describe('Config', () => {
 
     const { config } = await import('../../../src/config/index.js');
     
-    expect(config.OAUTH_REDIRECT_BASE).toBe('http://localhost:3000');
+    expect(config.OAUTH_REDIRECT_BASE).toBe('https://clipvault-six.vercel.app');
   });
 });

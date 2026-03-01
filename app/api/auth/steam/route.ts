@@ -6,7 +6,7 @@ export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const code = searchParams.get("code");
   const state = searchParams.get("state");
-  const claimedId = searchParams.get("openid_claimed_id");
+  const claimedId = searchParams.get("openid.claimed_id");
   const steamId = claimedId ? claimedId.split("/").pop() : undefined;
 
   if (!code || !state) {

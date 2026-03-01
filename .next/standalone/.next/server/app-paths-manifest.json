@@ -1,0 +1,10 @@
+{
+  "/_global-error/page": "app/_global-error/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/auth/epic/route": "app/api/auth/epic/route.js",
+  "/api/auth/riot/route": "app/api/auth/riot/route.js",
+  "/api/auth/steam/route": "app/api/auth/steam/route.js",
+  "/api/webhooks/allstar/route": "app/api/webhooks/allstar/route.js",
+  "/linked/page": "app/linked/page.js",
+  "/page": "app/page.js"
+}
