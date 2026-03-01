@@ -4,20 +4,24 @@ import { PlatformType } from "@/lib/backend/types";
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
-  const code = searchParams.get("code");
+  const mode = searchParams.get("openid.mode");
   const state = searchParams.get("state");
   const claimedId = searchParams.get("openid.claimed_id");
-  const steamId = claimedId ? claimedId.split("/").pop() : undefined;
+  const identity = searchParams.get("openid.identity");
+  const steamId = claimedId ? claimedId.split("/").pop() : identity?.split("/").pop() : undefined;
 
-  if (!code || !state) {
+  // Handle Steam OpenID error
+  if (mode === "error") {
+    const error = searchParams.get("openid.error") || "Unknown error";
     return NextResponse.redirect(
-      new URL("/linked?error=Missing+code+or+state", request.url)
+      new URL(`/linked?error=${encodeURIComponent(error)}`, request.url)
     );
   }
 
-  if (!steamId) {
+  // Steam OpenID success response (mode = "id_res")
+  if (!state || !steamId) {
     return NextResponse.redirect(
-      new URL("/linked?error=Missing+Steam+ID", request.url)
+      new URL("/linked?error=Missing+state+or+Steam+ID", request.url)
     );
   }
 
@@ -28,7 +32,7 @@ export async function GET(request: NextRequest) {
       PlatformType.STEAM,
       steamId,
       undefined,
-      code
+      undefined
     );
 
     return NextResponse.redirect(

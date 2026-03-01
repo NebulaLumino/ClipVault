@@ -39,7 +39,7 @@ async function handleSlashCommand(interaction: any): Promise<void> {
 
     switch (commandName) {
       case "link": {
-        await handleLinkCommand(interaction, options);
+        await handleLinkCommand(interaction, options, user.id);
         break;
       }
 
@@ -85,13 +85,14 @@ async function handleSlashCommand(interaction: any): Promise<void> {
 async function handleLinkCommand(
   interaction: any,
   options: any,
+  userId: string,
 ): Promise<void> {
   const subcommand = options.getSubcommand();
   let authUrl = "";
 
   switch (subcommand) {
     case "steam":
-      authUrl = `https://steamcommunity.com/openid/login?openid.ns=http://specs.openid.net/auth/2.0&openid.mode=checkid_setup&openid.return_to=${encodeURIComponent(config.OAUTH_REDIRECT_BASE + "/api/auth/steam")}&openid.realm=${encodeURIComponent(config.OAUTH_REDIRECT_BASE)}&openid.identity=http://specs.openid.net/auth/2.0/claimed_identity&openid.claimed_id=http://specs.openid.net/auth/2.0/claimed_identity`;
+      authUrl = `https://steamcommunity.com/openid/login?openid.ns=http://specs.openid.net/auth/2.0&openid.mode=checkid_setup&openid.return_to=${encodeURIComponent(config.OAUTH_REDIRECT_BASE + "/api/auth/steam?state=" + userId)}&openid.realm=${encodeURIComponent(config.OAUTH_REDIRECT_BASE)}&openid.identity=http://specs.openid.net/auth/2.0/claimed_identity&openid.claimed_id=http://specs.openid.net/auth/2.0/claimed_identity`;
       break;
     case "riot":
       authUrl = `https://auth.riotgames.com/authorize?redirect_uri=${encodeURIComponent(config.OAUTH_REDIRECT_BASE + "/oauth/riot/callback")}&client_id=${config.RIOT_CLIENT_ID}&response_type=code&scope=openid%20profile%20lol`;
