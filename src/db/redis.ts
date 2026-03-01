@@ -11,12 +11,12 @@ function createRedisClient(): Redis {
     host: config.REDIS_HOST,
     port: config.REDIS_PORT,
     password: config.REDIS_PASSWORD || undefined,
+    tls: {},
     maxRetriesPerRequest: 3,
     retryStrategy(times) {
       const delay = Math.min(times * 50, 2000);
       return delay;
     },
-    lazyConnect: true,
   });
 }
 

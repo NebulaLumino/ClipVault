@@ -23,7 +23,7 @@ async function main() {
 
   // Connect to Redis
   try {
-    await redis.connect();
+    await redis.ping();
     logger.info('Redis connected');
   } catch (error) {
     logger.error('Failed to connect to Redis', { error: String(error) });
