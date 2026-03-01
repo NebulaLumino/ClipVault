@@ -23,6 +23,7 @@ async function main() {
 
   // Connect to Redis
   try {
+    await new Promise(resolve => setTimeout(resolve, 500));
     await redis.ping();
     logger.info('Redis connected');
   } catch (error) {
