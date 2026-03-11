@@ -694,7 +694,7 @@ export default function Home() {
           </div>
           <div className="flex flex-col md:flex-row items-center justify-between pt-8 border-t border-primary/10">
             <p className="text-sm text-muted-foreground">
-              © 2024 ClipVault. All rights reserved.
+              © {new Date().getFullYear()} ClipVault. All rights reserved.
             </p>
             <div className="flex items-center gap-4 mt-4 md:mt-0">
               <a
