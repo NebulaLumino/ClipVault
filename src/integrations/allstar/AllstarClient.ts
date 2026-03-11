@@ -47,22 +47,39 @@ export class AllstarError extends Error {
 
 export class AllstarClient {
   private readonly baseUrl: string;
-  private readonly apiKey: string;
+  private readonly defaultApiKey: string;
 
   constructor() {
     this.baseUrl = config.ALLSTAR_API_URL || "https://api.allstar.gg";
-    this.apiKey = config.ALLSTAR_API_KEY || "";
+    this.defaultApiKey = config.ALLSTAR_API_KEY || "";
 
-    if (!this.apiKey) {
+    if (!this.defaultApiKey) {
       logger.warn("Allstar API key not configured");
     }
   }
 
-  private getHeaders(): Record<string, string> {
+  private getHeaders(userApiKey?: string): Record<string, string> {
+    const apiKey = userApiKey || this.defaultApiKey;
     return {
-      Authorization: `Bearer ${this.apiKey}`,
+      Authorization: `Bearer ${apiKey}`,
       "Content-Type": "application/json",
     };
+  }
+
+  /**
+   * Resolve the API key to use: user's personal key if set, otherwise the shared key.
+   */
+  async resolveApiKey(userId: string): Promise<string> {
+    try {
+      const prisma = (await import("../../db/prisma.js")).default;
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { allstarApiKey: true },
+      });
+      return user?.allstarApiKey || this.defaultApiKey;
+    } catch {
+      return this.defaultApiKey;
+    }
   }
 
   async createClip(
@@ -70,8 +87,10 @@ export class AllstarClient {
     platform: string,
     gameTitle: string,
     clipType: string,
+    userApiKey?: string,
   ): Promise<AllstarCreateClipResponse> {
-    if (!this.apiKey) {
+    const apiKey = userApiKey || this.defaultApiKey;
+    if (!apiKey) {
       throw new AllstarError(
         "Allstar API key not configured",
         "NOT_CONFIGURED",
@@ -83,7 +102,7 @@ export class AllstarClient {
     try {
       const response = await fetch(url, {
         method: "POST",
-        headers: this.getHeaders(),
+        headers: this.getHeaders(apiKey),
         body: JSON.stringify({
           platformMatchId,
           platform,
@@ -110,7 +129,7 @@ export class AllstarClient {
   }
 
   async getClip(clipId: string): Promise<AllstarClip | null> {
-    if (!this.apiKey) {
+    if (!this.defaultApiKey) {
       throw new AllstarError(
         "Allstar API key not configured",
         "NOT_CONFIGURED",
@@ -144,7 +163,7 @@ export class AllstarClient {
     limit = 10,
     status?: string,
   ): Promise<AllstarGetClipsResponse> {
-    if (!this.apiKey) {
+    if (!this.defaultApiKey) {
       throw new AllstarError(
         "Allstar API key not configured",
         "NOT_CONFIGURED",
@@ -178,8 +197,10 @@ export class AllstarClient {
 
   async requestClips(
     request: AllstarRequestClipsRequest,
+    userApiKey?: string,
   ): Promise<AllstarRequestClipsResponse> {
-    if (!this.apiKey) {
+    const apiKey = userApiKey || this.defaultApiKey;
+    if (!apiKey) {
       throw new AllstarError(
         "Allstar API key not configured",
         "NOT_CONFIGURED",
@@ -191,7 +212,7 @@ export class AllstarClient {
     try {
       const response = await fetch(url, {
         method: "POST",
-        headers: this.getHeaders(),
+        headers: this.getHeaders(apiKey),
         body: JSON.stringify(request),
       });
 

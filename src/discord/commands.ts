@@ -109,6 +109,31 @@ export const helpCommand = new SlashCommandBuilder()
   .setName('help')
   .setDescription('Get help with ClipVault commands');
 
+export const apikeyCommand = new SlashCommandBuilder()
+  .setName('apikey')
+  .setDescription('Set your personal Allstar API key to avoid shared rate limits')
+  .addSubcommand(
+    new SlashCommandSubcommandBuilder()
+      .setName('set')
+      .setDescription('Set your personal Allstar API key')
+      .addStringOption((option) =>
+        option
+          .setName('key')
+          .setDescription('Your Allstar API key (get one at allstar.gg)')
+          .setRequired(true)
+      )
+  )
+  .addSubcommand(
+    new SlashCommandSubcommandBuilder()
+      .setName('remove')
+      .setDescription('Remove your personal key and use the shared key')
+  )
+  .addSubcommand(
+    new SlashCommandSubcommandBuilder()
+      .setName('status')
+      .setDescription('Check if you have a personal API key set')
+  );
+
 export const allCommands = [
   linkCommand,
   unlinkCommand,
@@ -116,4 +141,5 @@ export const allCommands = [
   statusCommand,
   historyCommand,
   helpCommand,
+  apikeyCommand,
 ];

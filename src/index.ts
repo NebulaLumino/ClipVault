@@ -6,6 +6,7 @@ import { createMatchPollWorker } from "./jobs/matchPoll.worker.js";
 import { createClipRequestWorker } from "./jobs/clipRequest.worker.js";
 import { createClipMonitorWorker } from "./jobs/clipMonitor.worker.js";
 import { createClipDeliveryWorker } from "./jobs/clipDelivery.worker.js";
+import { startScheduler, stopScheduler } from "./jobs/scheduler.js";
 import prisma from "./db/prisma.js";
 import { redis } from "./db/redis.js";
 
@@ -69,6 +70,9 @@ async function main() {
     createClipMonitorWorker();
     createClipDeliveryWorker();
     logger.info("Workers started");
+
+    // Start the match poll scheduler
+    startScheduler();
   } catch (error) {
     logger.error("Failed to start workers", { error: String(error) });
     process.exit(1);
@@ -80,6 +84,7 @@ async function main() {
 // Graceful shutdown
 process.on("SIGTERM", async () => {
   logger.info("SIGTERM received, shutting down...");
+  stopScheduler();
   await prisma.$disconnect();
   await redis.quit();
   await discordClient.destroy();
@@ -88,6 +93,7 @@ process.on("SIGTERM", async () => {
 
 process.on("SIGINT", async () => {
   logger.info("SIGINT received, shutting down...");
+  stopScheduler();
   await prisma.$disconnect();
   await redis.quit();
   await discordClient.destroy();

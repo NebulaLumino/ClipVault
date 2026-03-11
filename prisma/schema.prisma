@@ -75,6 +75,7 @@ model User {
   globalName      String?
   avatarUrl       String?
   preferences     Json?
+  allstarApiKey   String?
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
 

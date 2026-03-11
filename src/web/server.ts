@@ -6,6 +6,7 @@ import { logger } from '../utils/logger.js';
 import { userService } from '../services/UserService.js';
 import { accountService } from '../services/AccountService.js';
 import { PlatformType } from '../types/index.js';
+import prisma from '../db/prisma.js';
 
 const fastify = Fastify({
   logger: false,
@@ -100,19 +101,50 @@ fastify.get('/oauth/epic/callback', async (request: FastifyRequest, reply: Fasti
 // Allstar webhook handler
 fastify.post('/webhooks/allstar', async (request: FastifyRequest, reply: FastifyReply) => {
   const body = request.body as Record<string, unknown>;
-  
+
   logger.debug('Allstar webhook received', body);
 
   const eventType = body.event as string;
   const clipId = body.clipId as string;
+  const allstarClipId = body.allstarClipId as string || clipId;
   const status = body.status as string;
 
-  if (eventType === 'clip.ready' && clipId) {
-    logger.info('Clip ready from Allstar', { clipId, status });
-    const { clipDeliveryQueue } = await import('../jobs/queue.js');
-    await clipDeliveryQueue.add('deliver-clip', {
-      clipId,
-    });
+  if (eventType === 'clip.ready' && (clipId || allstarClipId)) {
+    logger.info('Clip ready from Allstar', { clipId, allstarClipId, status });
+
+    // Look up the clip record to get userId
+    try {
+      const clip = await prisma.clipRecord.findFirst({
+        where: allstarClipId
+          ? { allstarClipId }
+          : { id: clipId },
+      });
+
+      if (clip) {
+        // Update clip status to ready
+        await prisma.clipRecord.update({
+          where: { id: clip.id },
+          data: {
+            status: 'ready',
+            readyAt: new Date(),
+            videoUrl: (body.videoUrl as string) || clip.videoUrl,
+            thumbnailUrl: (body.thumbnailUrl as string) || clip.thumbnailUrl,
+          },
+        });
+
+        const { clipDeliveryQueue } = await import('../jobs/queue.js');
+        await clipDeliveryQueue.add('deliver-clip', {
+          clipId: clip.id,
+          userId: clip.userId,
+          matchId: clip.matchId,
+        });
+        logger.info('Queued clip delivery', { clipId: clip.id, userId: clip.userId });
+      } else {
+        logger.warn('Clip not found for webhook', { clipId, allstarClipId });
+      }
+    } catch (error) {
+      logger.error('Failed to process Allstar webhook', { error: String(error) });
+    }
   }
 
   return { received: true };

@@ -277,11 +277,68 @@ discordClient.on("interactionCreate", async (interaction) => {
 /settings delivery - Set DM or channel delivery
 /settings quiet-hours - Set quiet hours
 /settings clip-types - Set preferred clip types
+/apikey set - Set your personal Allstar API key
+/apikey remove - Remove your personal key
+/apikey status - Check your API key status
 /status - Check linked accounts
 /history - View clip delivery history
 /help - Show this help message`,
           ephemeral: true,
         });
+        break;
+      }
+
+      case "apikey": {
+        const subcommand = options.getSubcommand();
+        const prismaModule = await import("../db/prisma.js");
+        const prismaClient = prismaModule.default;
+
+        switch (subcommand) {
+          case "set": {
+            const key = options.getString("key");
+            if (!key) {
+              await interaction.reply({
+                content: "Please provide an API key.",
+                ephemeral: true,
+              });
+              break;
+            }
+            await prismaClient.user.update({
+              where: { id: user.id },
+              data: { allstarApiKey: key },
+            });
+            await interaction.reply({
+              content: "Your personal Allstar API key has been saved. ClipVault will use it for your clip requests, avoiding shared rate limits.",
+              ephemeral: true,
+            });
+            break;
+          }
+          case "remove": {
+            await prismaClient.user.update({
+              where: { id: user.id },
+              data: { allstarApiKey: null },
+            });
+            await interaction.reply({
+              content: "Your personal Allstar API key has been removed. ClipVault will use the shared key.",
+              ephemeral: true,
+            });
+            break;
+          }
+          case "status": {
+            const dbUser = await prismaClient.user.findUnique({
+              where: { id: user.id },
+              select: { allstarApiKey: true },
+            });
+            const hasKey = !!dbUser?.allstarApiKey;
+            await interaction.reply({
+              content: hasKey
+                ? "You have a personal Allstar API key set. Your requests use your own key."
+                : "No personal API key set. Using the shared ClipVault key. Set your own with `/apikey set` to avoid rate limits.",
+              ephemeral: true,
+            });
+            break;
+          }
+        }
         break;
       }
     }

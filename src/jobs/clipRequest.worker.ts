@@ -44,13 +44,19 @@ export function createClipRequestWorker() {
           return { status: "skipped", reason: "clips_already_requested" };
         }
 
+        // Resolve user's Allstar API key (personal or shared)
+        const userApiKey = await allstarClient.resolveApiKey(userId);
+
         // Request clips from Allstar
-        const clipRequest = await allstarClient.requestClips({
-          platformMatchId: platformMatchId,
-          platform,
-          gameTitle,
-          matchId,
-        });
+        const clipRequest = await allstarClient.requestClips(
+          {
+            platformMatchId: platformMatchId,
+            platform,
+            gameTitle,
+            matchId,
+          },
+          userApiKey,
+        );
 
         // Create clip records in database
         for (const clip of clipRequest.clips) {
