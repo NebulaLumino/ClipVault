@@ -43,44 +43,62 @@ async function validateSteamResponse(
 }
 
 function extractSteamId(params: Record<string, string>): string | null {
-  const claimedId = params["openid.claimed_id"];
-  const identity = params["openid.identity"];
+  let claimedId = params["openid.claimed_id"];
+  let identity = params["openid.identity"];
 
   console.log("[Steam] Extracting Steam ID from:");
   console.log("  claimed_id:", claimedId);
   console.log("  identity:", identity);
 
+  // If claimed_id is still the generic OpenID URL, Steam didn't authenticate properly
+  if (claimedId?.includes("specs.openid.net/auth/2.0/claimed_identity")) {
+    console.log(
+      "[Steam] ERROR: claimed_id is still the generic OpenID URL - user may not have completed auth",
+    );
+    return null;
+  }
+
+  if (identity?.includes("specs.openid.net/auth/2.0/claimed_identity")) {
+    console.log(
+      "[Steam] ERROR: identity is still the generic OpenID URL - user may not have completed auth",
+    );
+    return null;
+  }
+
   if (claimedId) {
-    const match = claimedId.match(/\/id\/(\d+)$/);
+    // Try to extract Steam ID from URL like http://steamcommunity.com/openid/id/765611980281XXXXX
+    const match = claimedId.match(/\/id\/(\d+)/);
     if (match) return match[1];
 
-    const parts = claimedId.split("/");
-    const lastPart = parts[parts.length - 1];
-    if (/^\d{17}$/.test(lastPart)) {
-      return lastPart;
-    }
+    // Also try just numbers at the end
+    const numMatch = claimedId.match(/(\d{17})/);
+    if (numMatch) return numMatch[1];
   }
 
   if (identity) {
-    const match = identity.match(/\/id\/(\d+)$/);
+    const match = identity.match(/\/id\/(\d+)/);
     if (match) return match[1];
 
-    const parts = identity.split("/");
-    const lastPart = parts[parts.length - 1];
-    if (/^\d{17}$/.test(lastPart)) {
-      return lastPart;
-    }
+    const numMatch = identity.match(/(\d{17})/);
+    if (numMatch) return numMatch[1];
   }
 
   return null;
 }
 
 export async function GET(request: NextRequest) {
-  const params = Object.fromEntries(request.nextUrl.searchParams);
+  // Get all params properly - including those with dots
+  const params: Record<string, string> = {};
+  for (const [key, value] of request.nextUrl.searchParams.entries()) {
+    params[key] = value;
+  }
 
   console.log("=== STEAM OAUTH CALLBACK ===");
   console.log("Full URL:", request.url);
   console.log("All params:", JSON.stringify(params, null, 2));
+  console.log("Mode param:", params["openid.mode"]);
+  console.log("claimed_id param:", params["openid.claimed_id"]);
+  console.log("identity param:", params["openid.identity"]);
 
   const mode = params["openid.mode"];
   const state = params["state"];
@@ -98,9 +116,17 @@ export async function GET(request: NextRequest) {
   }
 
   if (mode !== "id_res") {
-    console.error("[Steam] Invalid mode:", mode);
+    // If mode is checkid_setup or not present, this is the initial request, not the callback
+    console.error(
+      "[Steam] Invalid mode:",
+      mode,
+      "- This might be the initial request, not callback",
+    );
     return NextResponse.redirect(
-      new URL("/linked?error=Invalid+OpenID+response+mode", request.url),
+      new URL(
+        "/linked?error=Steam+auth+not+completed+or+invalid+mode",
+        request.url,
+      ),
     );
   }
 
