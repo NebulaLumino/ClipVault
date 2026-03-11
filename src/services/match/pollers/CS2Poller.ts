@@ -1,6 +1,6 @@
 import { BasePoller, type DetectedMatch } from "./BasePoller.js";
 import type { LinkedAccount, PollState } from "@prisma/client";
-import { steamClient } from "../../../integrations/steam/SteamClient.js";
+import { leetifyClient } from "../../../integrations/leetify/LeetifyClient.js";
 import { logger } from "../../../utils/logger.js";
 
 export class CS2Poller extends BasePoller {
@@ -15,20 +15,27 @@ export class CS2Poller extends BasePoller {
     }
 
     try {
-      const matches = await steamClient.getCS2MatchHistory(
+      const matches = await leetifyClient.getMatchHistory(
         linkedAccount.platformAccountId,
         10,
       );
 
       const detectedMatches: DetectedMatch[] = matches.map((m) => ({
-        externalMatchId: m.matchid,
+        externalMatchId: m.matchId,
         game: this.game,
         matchData: {
-          result: m.result,
-          score: m.score ? `${m.score.team1}-${m.score.team2}` : undefined,
-          timestamp: m.matchtime ? new Date(m.matchtime * 1000) : new Date(),
+          map: m.mapName,
+          mode: m.gameMode,
+          score: `${m.scores.team1}-${m.scores.team2}`,
+          kills: m.playerStats.kills,
+          deaths: m.playerStats.deaths,
+          assists: m.playerStats.assists,
+          adr: m.playerStats.adr,
+          rating: m.playerStats.rating,
+          dataSource: m.dataSource,
+          dataSourceMatchId: m.dataSourceMatchId,
         },
-        timestamp: m.matchtime ? new Date(m.matchtime * 1000) : new Date(),
+        timestamp: new Date(m.finishedAt),
       }));
 
       const newMatches = this.filterNewMatches(

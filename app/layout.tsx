@@ -14,16 +14,25 @@ export const metadata: Metadata = {
   description: "Automatically deliver gaming highlights from CS2, Dota 2, League of Legends, and Fortnite directly to your Discord. Link your accounts and never miss a highlight again.",
   keywords: ["gaming", "highlights", "clips", "Discord", "CS2", "Dota 2", "League of Legends", "Fortnite", "automation"],
   authors: [{ name: "ClipVault" }],
+  icons: {
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico", sizes: "any" }
+    ],
+    apple: "/apple-touch-icon.png",
+  },
   openGraph: {
     title: "ClipVault - Automate Your Gaming Highlights",
     description: "Automatically deliver gaming highlights directly to your Discord.",
     type: "website",
     siteName: "ClipVault",
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
     title: "ClipVault - Automate Your Gaming Highlights",
     description: "Automatically deliver gaming highlights directly to your Discord.",
+    images: ["/og-image.png"],
   },
   robots: {
     index: true,

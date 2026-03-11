@@ -77,6 +77,8 @@ export const API_ENDPOINTS = {
   RIOT_BASE: "https://americas.api.riotgames.com",
   OPENDOTA_BASE: "https://api.opendota.com/api",
   FORTNITE_API_BASE: "https://fortniteapi.io",
+  LEETIFY_BASE: "https://api-public.cs-prod.leetify.com",
+  FACEIT_BASE: "https://open.faceit.com/data/v4",
 } as const;
 
 export const MATCH_STATUS_TIMESTAMPS = {

@@ -37,6 +37,12 @@ const configSchema = z.object({
   ALLSTAR_API_URL: z.string().min(1).default("https://api.allstar.gg"),
   ALLSTAR_PARTNER_NAME: z.string().optional(),
 
+  // Leetify
+  LEETIFY_API_KEY: z.string().optional(),
+
+  // FACEIT
+  FACEIT_API_KEY: z.string().optional(),
+
   // Application
   NODE_ENV: z
     .enum(["development", "staging", "production", "test"])

@@ -133,6 +133,22 @@ export class MatchRepository {
       include: { clips: true },
     });
   }
+
+  async findByUserAndCrossRef(userId: string, matchId: string): Promise<MatchRecord | null> {
+    // Check if any match for this user has this as platformMatchId
+    const byPlatformId = await prisma.matchRecord.findFirst({
+      where: { userId, platformMatchId: matchId },
+    });
+    if (byPlatformId) return byPlatformId;
+
+    // Check metadata JSON for dataSourceMatchId
+    return prisma.matchRecord.findFirst({
+      where: {
+        userId,
+        metadata: { path: ['dataSourceMatchId'], equals: matchId },
+      },
+    });
+  }
 }
 
 export const matchRepository = new MatchRepository();

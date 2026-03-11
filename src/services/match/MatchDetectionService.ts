@@ -4,15 +4,16 @@ import { cs2Poller } from "./pollers/CS2Poller.js";
 import { lolPoller } from "./pollers/LoLPoller.js";
 import { dota2Poller } from "./pollers/Dota2Poller.js";
 import { fortnitePoller } from "./pollers/FortnitePoller.js";
+import { faceitCS2Poller } from "./pollers/FaceitCS2Poller.js";
 import type { BasePoller } from "./pollers/BasePoller.js";
 import { logger } from "../../utils/logger.js";
 
 const POLLER_MAP: Record<string, BasePoller> = {
-  steam: cs2Poller,
+  steam: cs2Poller,        // Now uses Leetify
   riot: lolPoller,
   epic: fortnitePoller,
   discord: cs2Poller,
-  faceit: cs2Poller,
+  faceit: faceitCS2Poller, // NEW: dedicated FACEIT poller
 };
 
 const GAME_PLATFORM_MAP: Record<string, string> = {
@@ -78,6 +79,18 @@ export class MatchDetectionService {
 
         if (existingMatch) {
           continue;
+        }
+
+        // Check for cross-platform duplicates
+        const crossRef = match.matchData.dataSourceMatchId as string;
+        if (crossRef) {
+          const existingCross = await matchRepository.findByUserAndCrossRef(
+            account.userId,
+            crossRef,
+          );
+          if (existingCross) {
+            continue;
+          }
         }
 
         await matchRepository.create({

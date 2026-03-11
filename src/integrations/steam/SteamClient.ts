@@ -79,41 +79,15 @@ export class SteamClient {
     }
   }
 
+  /**
+   * @deprecated This method incorrectly calls OpenDota API (Dota 2 data) for CS2 matches.
+   * Use LeetifyClient.getMatchHistory() for actual CS2 match data instead.
+   */
   async getCS2MatchHistory(steamId: string, limit = 5): Promise<CS2Match[]> {
-    if (!this.apiKey) {
-      throw new SteamError("Steam API key not configured", "NOT_CONFIGURED");
-    }
-
-    // Using OpenDota API for CS2 match history as Valve doesn't provide direct API
-    const url = `https://api.opendota.com/api/players/${steamId}/matches?limit=${limit}`;
-
-    try {
-      const response = await fetch(url);
-
-      if (!response.ok) {
-        throw new SteamError(
-          "Failed to fetch match history",
-          "REQUEST_FAILED",
-          response.status,
-        );
-      }
-
-      const matches = (await response.json()) as Array<Record<string, unknown>>;
-      return matches.map((m) => ({
-        matchid: String(m.match_id),
-        matchtime: m.start_time as number,
-        result:
-          m.radiant_win === (m.player_slot as number) < 128 ? "win" : "loss",
-        score: {
-          team1: m.radiant_score as number,
-          team2: m.dire_score as number,
-        },
-      }));
-    } catch (error) {
-      if (error instanceof SteamError) throw error;
-      logger.error("Steam API error", { error: String(error) });
-      throw new SteamError(String(error), "REQUEST_FAILED");
-    }
+    throw new SteamError(
+      "getCS2MatchHistory is deprecated - use LeetifyClient for CS2 matches",
+      "DEPRECATED"
+    );
   }
 
   async resolveVanityUrl(vanityUrl: string): Promise<string | null> {

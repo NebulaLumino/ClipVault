@@ -4,6 +4,8 @@ import { PlatformType, AccountLinkStatus } from '../types/index.js';
 import { steamClient } from '../integrations/steam/SteamClient.js';
 import { riotClient } from '../integrations/riot/RiotClient.js';
 import { epicClient } from '../integrations/epic/EpicClient.js';
+import { leetifyClient } from '../integrations/leetify/LeetifyClient.js';
+import { faceitClient } from '../integrations/faceit/FaceitClient.js';
 import type { LinkedAccount } from '../types/index.js';
 
 interface MatchInfo {
@@ -72,6 +74,30 @@ export class AccountService {
     });
 
     logger.info('Created new linked account', { userId, platform, accountId: account.id });
+
+    // Auto-resolve FACEIT account from Steam linking
+    if (platform === PlatformType.STEAM) {
+      try {
+        const faceitPlayer = await faceitClient.getPlayerBySteamId(platformAccountId);
+        if (faceitPlayer) {
+          // Auto-link FACEIT (reuse linkAccount, which handles upsert)
+          await this.linkAccount(userId, PlatformType.FACEIT, faceitPlayer.player_id, faceitPlayer.nickname);
+          logger.info('Auto-linked FACEIT account from Steam', {
+            userId,
+            faceitPlayerId: faceitPlayer.player_id,
+            faceitNickname: faceitPlayer.nickname
+          });
+        }
+      } catch (error) {
+        logger.warn('Could not auto-resolve FACEIT account', {
+          userId,
+          steamId: platformAccountId,
+          error: String(error)
+        });
+        // Non-fatal: FACEIT linking is optional
+      }
+    }
+
     return account as unknown as LinkedAccount;
   }
 
@@ -180,11 +206,11 @@ export class AccountService {
     try {
       switch (platform) {
         case PlatformType.STEAM: {
-          const matches = await steamClient.getCS2MatchHistory(platformAccountId, count);
-          return matches.map((m: { matchid: string; matchtime?: number; result?: string }) => ({
-            matchId: m.matchid,
-            matchtime: m.matchtime,
-            result: m.result,
+          const matches = await leetifyClient.getMatchHistory(platformAccountId, count);
+          return matches.map((m) => ({
+            matchId: m.matchId,
+            matchtime: new Date(m.finishedAt).getTime() / 1000,
+            result: undefined, // Leetify doesn't provide win/loss in basic match history
           }));
         }
         case PlatformType.RIOT: {

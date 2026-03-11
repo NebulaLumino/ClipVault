@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -35,7 +36,13 @@ export default function Home() {
           <nav className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center glow-primary-sm">
-                <Gamepad2 className="w-6 h-6 text-primary" />
+                <Image
+                  src="/logo.svg"
+                  alt="ClipVault Logo"
+                  width={24}
+                  height={24}
+                  className="w-6 h-6"
+                />
               </div>
               <span className="text-xl font-bold text-gradient">ClipVault</span>
             </div>
@@ -67,12 +74,11 @@ export default function Home() {
             </div>
             <div className="flex items-center gap-4">
               <a
-                href="https://discord.com/oauth2/authorize?client_id=1477459193668571238&permissions=2147614720&scope=bot%20applications.commands"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="#how-it-works"
+                className="hidden sm:block"
               >
-                <Button variant="ghost" size="sm" className="hidden sm:flex">
-                  Sign In
+                <Button variant="ghost" size="sm">
+                  Documentation
                 </Button>
               </a>
               <a
@@ -81,7 +87,8 @@ export default function Home() {
                 rel="noopener noreferrer"
               >
                 <Button size="sm" className="glow">
-                  Get Started
+                  <MessageSquare className="w-4 h-4 mr-2" />
+                  Add Bot
                 </Button>
               </a>
             </div>
@@ -131,14 +138,21 @@ export default function Home() {
                   </a>
                 </Button>
               </div>
-              <div className="flex items-center gap-8 pt-4">
+                <div className="flex items-center gap-8 pt-4">
                 <div className="flex items-center gap-2">
                   <div className="flex -space-x-2">
-                    {[1, 2, 3, 4].map((i) => (
+                    {[
+                      { bg: "bg-gradient-to-br from-blue-500/30 to-blue-500/10", initial: "A" },
+                      { bg: "bg-gradient-to-br from-green-500/30 to-green-500/10", initial: "M" },
+                      { bg: "bg-gradient-to-br from-purple-500/30 to-purple-500/10", initial: "J" },
+                      { bg: "bg-gradient-to-br from-orange-500/30 to-orange-500/10", initial: "S" }
+                    ].map((user, i) => (
                       <div
                         key={i}
-                        className="w-8 h-8 rounded-full bg-gradient-to-br from-primary/30 to-primary/10 border-2 border-background"
-                      />
+                        className={`w-8 h-8 rounded-full ${user.bg} border-2 border-background flex items-center justify-center text-xs font-semibold text-white`}
+                      >
+                        {user.initial}
+                      </div>
                     ))}
                   </div>
                   <span className="text-sm text-muted-foreground">
@@ -181,8 +195,35 @@ export default function Home() {
                     </div>
                     <Badge variant="success">New</Badge>
                   </div>
-                  <div className="rounded-lg bg-black/40 aspect-video flex items-center justify-center border border-primary/20">
+                  <div className="rounded-lg bg-black/40 aspect-video flex items-center justify-center border border-primary/20 relative overflow-hidden group cursor-pointer">
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent" />
+                    <div className="absolute inset-0 opacity-50" style={{
+                      backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23fbbf24' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
+                    }} />
+
+                    {/* Fake video content */}
+                    <div className="absolute top-4 left-4 flex items-center gap-2 text-xs">
+                      <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+                      <span className="text-white/80">LIVE</span>
+                    </div>
+
+                    {/* Game UI mockup */}
+                    <div className="absolute bottom-4 left-4 right-4">
+                      <div className="bg-black/60 rounded p-2 text-xs text-white/90">
+                        <div className="flex justify-between items-center mb-1">
+                          <span>🎯 ACE CLUTCH</span>
+                          <span>+1500 XP</span>
+                        </div>
+                        <div className="w-full bg-white/20 rounded-full h-1">
+                          <div className="bg-primary h-1 rounded-full w-3/4 animate-pulse" />
+                        </div>
+                      </div>
+                    </div>
+
                     <PlayButton />
+
+                    {/* Hover effect */}
+                    <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </div>
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
@@ -359,10 +400,13 @@ export default function Home() {
             ))}
           </div>
           <div className="text-center mt-12">
-            <Button variant="outline" size="lg">
+            <Button variant="outline" size="lg" className="group">
               Request a Game
-              <ChevronRight className="w-4 h-4 ml-2" />
+              <ChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
             </Button>
+            <p className="text-sm text-muted-foreground mt-2">
+              Don't see your favorite game? Let us know!
+            </p>
           </div>
         </div>
       </section>
@@ -449,6 +493,7 @@ export default function Home() {
                 name: "Alex",
                 handle: "@alex_clutch",
                 avatar: "A",
+                avatarBg: "bg-gradient-to-br from-blue-500/30 to-blue-500/10",
                 content:
                   "ClipVault has completely changed how I share my highlights. My clips now get uploaded automatically right after my matches end. Game changer!",
               },
@@ -456,6 +501,7 @@ export default function Home() {
                 name: "Maya",
                 handle: "@mayaplays",
                 avatar: "M",
+                avatarBg: "bg-gradient-to-br from-pink-500/30 to-pink-500/10",
                 content:
                   "I used to miss all my best plays because I was busy playing. Now ClipVault catches everything and delivers it straight to my Discord. Love it!",
               },
@@ -463,18 +509,20 @@ export default function Home() {
                 name: "Jaden",
                 handle: "@jadenfps",
                 avatar: "J",
+                avatarBg: "bg-gradient-to-br from-green-500/30 to-green-500/10",
                 content:
                   "The AI detection is insane. It somehow knows exactly when I make a crazy play. My viewers love the instant clip drops in the channel.",
               },
             ].map((testimonial, index) => (
               <Card
                 key={index}
-                className="glass-card glass-card-hover border-0 animate-fade-in-up"
+                className="glass-card glass-card-hover border-0 animate-fade-in-up relative overflow-hidden"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
-                <CardContent className="p-6">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-2xl" />
+                <CardContent className="p-6 relative">
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center font-bold">
+                    <div className={`w-10 h-10 rounded-full ${testimonial.avatarBg} flex items-center justify-center font-bold text-white border border-primary/20`}>
                       {testimonial.avatar}
                     </div>
                     <div>
@@ -484,9 +532,20 @@ export default function Home() {
                       </div>
                     </div>
                   </div>
-                  <p className="text-muted-foreground">
+                  <p className="text-muted-foreground leading-relaxed">
                     "{testimonial.content}"
                   </p>
+                  <div className="flex items-center gap-1 mt-4 text-primary">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <svg
+                        key={star}
+                        className="w-4 h-4 fill-current"
+                        viewBox="0 0 20 20"
+                      >
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                    ))}
+                  </div>
                 </CardContent>
               </Card>
             ))}
@@ -545,7 +604,13 @@ export default function Home() {
             <div>
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
-                  <Gamepad2 className="w-6 h-6 text-primary" />
+                  <Image
+                    src="/logo.svg"
+                    alt="ClipVault Logo"
+                    width={24}
+                    height={24}
+                    className="w-6 h-6"
+                  />
                 </div>
                 <span className="text-xl font-bold text-gradient">
                   ClipVault
@@ -654,10 +719,11 @@ export default function Home() {
 
 function PlayButton() {
   return (
-    <div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center cursor-pointer hover:bg-primary/30 transition-colors group">
-      <div className="w-16 h-16 rounded-full bg-primary/40 flex items-center justify-center group-hover:scale-110 transition-transform">
+    <div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center cursor-pointer hover:bg-primary/30 transition-all duration-300 group hover:scale-110">
+      <div className="w-16 h-16 rounded-full bg-primary/40 flex items-center justify-center group-hover:scale-110 transition-all duration-300 relative">
+        <div className="absolute inset-0 rounded-full bg-primary/20 animate-ping" />
         <svg
-          className="w-8 h-8 text-primary ml-1"
+          className="w-8 h-8 text-primary ml-1 relative z-10"
           fill="currentColor"
           viewBox="0 0 24 24"
         >
