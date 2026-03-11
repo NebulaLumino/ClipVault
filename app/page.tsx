@@ -113,12 +113,18 @@ export default function Home() {
                     href="https://discord.com/oauth2/authorize?client_id=1477459193668571238&permissions=2147614720&scope=bot%20applications.commands"
                     target="_blank"
                     rel="noopener noreferrer"
-                  <MessageSquare className="w-5 h-5 mr-2" />
+                  >
+                    <MessageSquare className="w-5 h-5 mr-2" />
                     Add to Discord
                     <ArrowRight className="w-5 h-5 ml-2" />
                   </a>
                 </Button>
-                <Button size="xl" variant="outline" className="text-base" asChild>
+                <Button
+                  size="xl"
+                  variant="outline"
+                  className="text-base"
+                  asChild
+                >
                   <a href="#how-it-works">
                     <Zap className="w-5 h-5 mr-2" />
                     See How It Works
@@ -515,7 +521,12 @@ export default function Home() {
                     <ArrowRight className="w-5 h-5 ml-2" />
                   </a>
                 </Button>
-                <Button size="xl" variant="outline" className="text-base" asChild>
+                <Button
+                  size="xl"
+                  variant="outline"
+                  className="text-base"
+                  asChild
+                >
                   <a href="#how-it-works">
                     <Zap className="w-5 h-5 mr-2" />
                     See How It Works
