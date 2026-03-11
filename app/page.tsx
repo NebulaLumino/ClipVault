@@ -40,26 +40,50 @@ export default function Home() {
               <span className="text-xl font-bold text-gradient">ClipVault</span>
             </div>
             <div className="hidden md:flex items-center gap-8">
-              <a href="#features" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+              <a
+                href="#features"
+                className="text-sm text-muted-foreground hover:text-primary transition-colors"
+              >
                 Features
               </a>
-              <a href="#games" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+              <a
+                href="#games"
+                className="text-sm text-muted-foreground hover:text-primary transition-colors"
+              >
                 Games
               </a>
-              <a href="#how-it-works" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+              <a
+                href="#how-it-works"
+                className="text-sm text-muted-foreground hover:text-primary transition-colors"
+              >
                 How It Works
               </a>
-              <a href="#testimonials" className="text-sm text-muted-foreground hover:text-primary transition-colors">
+              <a
+                href="#testimonials"
+                className="text-sm text-muted-foreground hover:text-primary transition-colors"
+              >
                 Testimonials
               </a>
             </div>
             <div className="flex items-center gap-4">
-              <Button variant="ghost" size="sm" className="hidden sm:flex">
-                Sign In
-              </Button>
-              <Button size="sm" className="glow">
-                Get Started
-              </Button>
+              <a
+                href="https://discord.com/oauth2/authorize?client_id=1477459193668571238&permissions=2147614720&scope=bot%20applications.commands"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Button variant="ghost" size="sm" className="hidden sm:flex">
+                  Sign In
+                </Button>
+              </a>
+              <a
+                href="https://discord.com/oauth2/authorize?client_id=1477459193668571238&permissions=2147614720&scope=bot%20applications.commands"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Button size="sm" className="glow">
+                  Get Started
+                </Button>
+              </a>
             </div>
           </nav>
         </div>
@@ -79,19 +103,26 @@ export default function Home() {
                 <span className="text-gradient">Gaming Highlights</span>
               </h1>
               <p className="text-xl text-muted-foreground max-w-xl">
-                Never miss a highlight again. ClipVault automatically captures and delivers 
-                your best gaming moments from CS2, Dota 2, League of Legends, and Fortnite 
-                directly to your Discord.
+                Never miss a highlight again. ClipVault automatically captures
+                and delivers your best gaming moments from CS2, Dota 2, League
+                of Legends, and Fortnite directly to your Discord.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button size="xl" className="glow text-base">
+                <Button size="xl" className="glow text-base" asChild>
+                  <a
+                    href="https://discord.com/oauth2/authorize?client_id=1477459193668571238&permissions=2147614720&scope=bot%20applications.commands"
+                    target="_blank"
+                    rel="noopener noreferrer"
                   <MessageSquare className="w-5 h-5 mr-2" />
-                  Add to Discord
-                  <ArrowRight className="w-5 h-5 ml-2" />
+                    Add to Discord
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </a>
                 </Button>
-                <Button size="xl" variant="outline" className="text-base">
-                  <Zap className="w-5 h-5 mr-2" />
-                  See How It Works
+                <Button size="xl" variant="outline" className="text-base" asChild>
+                  <a href="#how-it-works">
+                    <Zap className="w-5 h-5 mr-2" />
+                    See How It Works
+                  </a>
                 </Button>
               </div>
               <div className="flex items-center gap-8 pt-4">
@@ -137,7 +168,9 @@ export default function Home() {
                       </div>
                       <div>
                         <div className="font-semibold">New Clip Available</div>
-                        <div className="text-sm text-muted-foreground">Just now</div>
+                        <div className="text-sm text-muted-foreground">
+                          Just now
+                        </div>
                       </div>
                     </div>
                     <Badge variant="success">New</Badge>
@@ -147,7 +180,9 @@ export default function Home() {
                   </div>
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">ACE clutch on Mirage</span>
+                      <span className="text-muted-foreground">
+                        ACE clutch on Mirage
+                      </span>
                       <span className="text-primary">15K views</span>
                     </div>
                     <Progress value={75} className="h-1" />
@@ -171,7 +206,9 @@ export default function Home() {
                   </div>
                   <div>
                     <div className="text-sm font-medium">Account Linked!</div>
-                    <div className="text-xs text-muted-foreground">Steam connected</div>
+                    <div className="text-xs text-muted-foreground">
+                      Steam connected
+                    </div>
                   </div>
                 </div>
               </div>
@@ -192,7 +229,7 @@ export default function Home() {
               <span className="text-gradient">Never Miss a Moment</span>
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Powerful features designed for competitive gamers who want to 
+              Powerful features designed for competitive gamers who want to
               capture and share their best plays automatically.
             </p>
           </div>
@@ -201,25 +238,29 @@ export default function Home() {
               {
                 icon: MessageSquare,
                 title: "Discord Integration",
-                description: "Direct delivery to your DMs or channel. Share highlights with friends instantly.",
+                description:
+                  "Direct delivery to your DMs or channel. Share highlights with friends instantly.",
                 color: "from-blue-500/20 to-blue-500/5",
               },
               {
                 icon: Layers,
                 title: "Multi-Platform",
-                description: "Support for CS2, Dota 2, League of Legends, and Fortnite. One bot for all games.",
+                description:
+                  "Support for CS2, Dota 2, League of Legends, and Fortnite. One bot for all games.",
                 color: "from-purple-500/20 to-purple-500/5",
               },
               {
                 icon: Target,
                 title: "Smart Detection",
-                description: "AI-powered highlight detection automatically finds your best moments.",
+                description:
+                  "AI-powered highlight detection automatically finds your best moments.",
                 color: "from-green-500/20 to-green-500/5",
               },
               {
                 icon: Zap,
                 title: "Fast Delivery",
-                description: "Get clips delivered within seconds of match completion. No waiting around.",
+                description:
+                  "Get clips delivered within seconds of match completion. No waiting around.",
                 color: "from-yellow-500/20 to-yellow-500/5",
               },
             ].map((feature, index) => (
@@ -228,12 +269,16 @@ export default function Home() {
                 className="glass-card glass-card-hover border-0 relative overflow-hidden animate-fade-in-up"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
-                <div className={`absolute inset-0 bg-gradient-to-br ${feature.color} opacity-50`} />
+                <div
+                  className={`absolute inset-0 bg-gradient-to-br ${feature.color} opacity-50`}
+                />
                 <CardContent className="p-6 relative">
                   <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center mb-4">
                     <feature.icon className="w-6 h-6 text-primary" />
                   </div>
-                  <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
+                  <h3 className="text-lg font-semibold mb-2">
+                    {feature.title}
+                  </h3>
                   <p className="text-sm text-muted-foreground">
                     {feature.description}
                   </p>
@@ -256,8 +301,8 @@ export default function Home() {
               <span className="text-gradient">Favorite Games</span>
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Link your accounts and let ClipVault automatically capture highlights 
-              from all your games in one place.
+              Link your accounts and let ClipVault automatically capture
+              highlights from all your games in one place.
             </p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -296,7 +341,9 @@ export default function Home() {
                 className={`glass-card glass-card-hover border-0 relative overflow-hidden animate-fade-in-up ${game.borderColor}`}
                 style={{ animationDelay: `${index * 100}ms` }}
               >
-                <div className={`absolute inset-0 bg-gradient-to-br ${game.color} opacity-50`} />
+                <div
+                  className={`absolute inset-0 bg-gradient-to-br ${game.color} opacity-50`}
+                />
                 <CardContent className="p-8 relative flex flex-col items-center text-center">
                   <div className="text-5xl mb-4">{game.icon}</div>
                   <h3 className="text-xl font-bold mb-1">{game.short}</h3>
@@ -322,8 +369,7 @@ export default function Home() {
               How It Works
             </Badge>
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
-              Set Up in{" "}
-              <span className="text-gradient">3 Easy Steps</span>
+              Set Up in <span className="text-gradient">3 Easy Steps</span>
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Get started in minutes. No complicated setup required.
@@ -332,24 +378,27 @@ export default function Home() {
           <div className="grid md:grid-cols-3 gap-8 relative">
             {/* Connecting Line */}
             <div className="hidden md:block absolute top-24 left-1/4 right-1/4 h-0.5 bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
-            
+
             {[
               {
                 step: "01",
                 title: "Add to Discord",
-                description: "Click the button to add ClipVault to your Discord server. Grant the necessary permissions.",
+                description:
+                  "Click the button to add ClipVault to your Discord server. Grant the necessary permissions.",
                 icon: MessageSquare,
               },
               {
                 step: "02",
                 title: "Link Your Accounts",
-                description: "Use /link command to connect your Steam, Riot, or Epic Games account.",
+                description:
+                  "Use /link command to connect your Steam, Riot, or Epic Games account.",
                 icon: Cpu,
               },
               {
                 step: "03",
                 title: "Get Highlights",
-                description: "That's it! You'll automatically receive your best highlights directly in Discord.",
+                description:
+                  "That's it! You'll automatically receive your best highlights directly in Discord.",
                 icon: Zap,
               },
             ].map((item, index) => (
@@ -382,8 +431,7 @@ export default function Home() {
               Testimonials
             </Badge>
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
-              Loved by{" "}
-              <span className="text-gradient">Competitive Gamers</span>
+              Loved by <span className="text-gradient">Competitive Gamers</span>
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               See what gamers are saying about ClipVault.
@@ -395,19 +443,22 @@ export default function Home() {
                 name: "Alex",
                 handle: "@alex_clutch",
                 avatar: "A",
-                content: "ClipVault has completely changed how I share my highlights. My clips now get uploaded automatically right after my matches end. Game changer!",
+                content:
+                  "ClipVault has completely changed how I share my highlights. My clips now get uploaded automatically right after my matches end. Game changer!",
               },
               {
                 name: "Maya",
                 handle: "@mayaplays",
                 avatar: "M",
-                content: "I used to miss all my best plays because I was busy playing. Now ClipVault catches everything and delivers it straight to my Discord. Love it!",
+                content:
+                  "I used to miss all my best plays because I was busy playing. Now ClipVault catches everything and delivers it straight to my Discord. Love it!",
               },
               {
                 name: "Jaden",
                 handle: "@jadenfps",
                 avatar: "J",
-                content: "The AI detection is insane. It somehow knows exactly when I make a crazy play. My viewers love the instant clip drops in the channel.",
+                content:
+                  "The AI detection is insane. It somehow knows exactly when I make a crazy play. My viewers love the instant clip drops in the channel.",
               },
             ].map((testimonial, index) => (
               <Card
@@ -427,7 +478,9 @@ export default function Home() {
                       </div>
                     </div>
                   </div>
-                  <p className="text-muted-foreground">"{testimonial.content}"</p>
+                  <p className="text-muted-foreground">
+                    "{testimonial.content}"
+                  </p>
                 </CardContent>
               </Card>
             ))}
@@ -447,16 +500,26 @@ export default function Home() {
                 <span className="text-gradient">Never Miss a Moment?</span>
               </h2>
               <p className="text-xl text-muted-foreground mb-8 max-w-xl mx-auto">
-                Add ClipVault to your Discord server today and start capturing 
+                Add ClipVault to your Discord server today and start capturing
                 your best gaming highlights automatically.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button size="xl" className="glow text-base">
-                  <MessageSquare className="w-5 h-5 mr-2" />
-                  Add to Discord
+                <Button size="xl" asChild>
+                  <a
+                    href="https://discord.com/oauth2/authorize?client_id=1477459193668571238&permissions=2147614720&scope=bot%20applications.commands"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <MessageSquare className="w-5 h-5 mr-2" />
+                    Add to Discord
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </a>
                 </Button>
-                <Button size="xl" variant="outline" className="text-base">
-                  Contact Support
+                <Button size="xl" variant="outline" className="text-base" asChild>
+                  <a href="#how-it-works">
+                    <Zap className="w-5 h-5 mr-2" />
+                    See How It Works
+                  </a>
                 </Button>
               </div>
             </div>
@@ -473,37 +536,83 @@ export default function Home() {
                 <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
                   <Gamepad2 className="w-6 h-6 text-primary" />
                 </div>
-                <span className="text-xl font-bold text-gradient">ClipVault</span>
+                <span className="text-xl font-bold text-gradient">
+                  ClipVault
+                </span>
               </div>
               <p className="text-sm text-muted-foreground">
-                Automate your gaming highlights. Capture, share, and celebrate 
+                Automate your gaming highlights. Capture, share, and celebrate
                 your best moments.
               </p>
             </div>
             <div>
               <h4 className="font-semibold mb-4">Product</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#" className="hover:text-primary transition-colors">Features</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">Pricing</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">Integrations</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">Changelog</a></li>
+                <li>
+                  <a href="#" className="hover:text-primary transition-colors">
+                    Features
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-primary transition-colors">
+                    Pricing
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-primary transition-colors">
+                    Integrations
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-primary transition-colors">
+                    Changelog
+                  </a>
+                </li>
               </ul>
             </div>
             <div>
               <h4 className="font-semibold mb-4">Resources</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#" className="hover:text-primary transition-colors">Documentation</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">API Reference</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">Support</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">Status</a></li>
+                <li>
+                  <a href="#" className="hover:text-primary transition-colors">
+                    Documentation
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-primary transition-colors">
+                    API Reference
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-primary transition-colors">
+                    Support
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-primary transition-colors">
+                    Status
+                  </a>
+                </li>
               </ul>
             </div>
             <div>
               <h4 className="font-semibold mb-4">Legal</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#" className="hover:text-primary transition-colors">Privacy Policy</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">Terms of Service</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">Cookie Policy</a></li>
+                <li>
+                  <a href="#" className="hover:text-primary transition-colors">
+                    Privacy Policy
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-primary transition-colors">
+                    Terms of Service
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-primary transition-colors">
+                    Cookie Policy
+                  </a>
+                </li>
               </ul>
             </div>
           </div>
@@ -512,10 +621,16 @@ export default function Home() {
               © 2024 ClipVault. All rights reserved.
             </p>
             <div className="flex items-center gap-4 mt-4 md:mt-0">
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
+              <a
+                href="#"
+                className="text-muted-foreground hover:text-primary transition-colors"
+              >
                 <Twitter className="w-5 h-5" />
               </a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
+              <a
+                href="#"
+                className="text-muted-foreground hover:text-primary transition-colors"
+              >
                 <Github className="w-5 h-5" />
               </a>
             </div>
