@@ -50,17 +50,23 @@ function extractSteamId(params: Record<string, string>): string | null {
   console.log("  claimed_id:", claimedId);
   console.log("  identity:", identity);
 
-  // If claimed_id is still the generic OpenID URL, Steam didn't authenticate properly
-  if (claimedId?.includes("specs.openid.net/auth/2.0/claimed_identity")) {
+  // If claimed_id is still a generic OpenID URL, Steam didn't authenticate properly
+  if (
+    claimedId &&
+    !claimedId.includes("steamcommunity.com/openid/id/")
+  ) {
     console.log(
-      "[Steam] ERROR: claimed_id is still the generic OpenID URL - user may not have completed auth",
+      "[Steam] ERROR: claimed_id is not a Steam profile URL - user may not have completed auth",
     );
     return null;
   }
 
-  if (identity?.includes("specs.openid.net/auth/2.0/claimed_identity")) {
+  if (
+    identity &&
+    !identity.includes("steamcommunity.com/openid/id/")
+  ) {
     console.log(
-      "[Steam] ERROR: identity is still the generic OpenID URL - user may not have completed auth",
+      "[Steam] ERROR: identity is not a Steam profile URL - user may not have completed auth",
     );
     return null;
   }
