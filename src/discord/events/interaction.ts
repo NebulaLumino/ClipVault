@@ -95,10 +95,10 @@ async function handleLinkCommand(
       authUrl = `https://steamcommunity.com/openid/login?openid.ns=http://specs.openid.net/auth/2.0&openid.mode=checkid_setup&openid.return_to=${encodeURIComponent(config.OAUTH_REDIRECT_BASE + "/api/auth/steam?state=" + userId)}&openid.realm=${encodeURIComponent(config.OAUTH_REDIRECT_BASE)}&openid.claimed_id=http://specs.openid.net/auth/2.0/identifier_select&openid.identity=http://specs.openid.net/auth/2.0/identifier_select`;
       break;
     case "riot":
-      authUrl = `https://auth.riotgames.com/authorize?redirect_uri=${encodeURIComponent(config.OAUTH_REDIRECT_BASE + "/oauth/riot/callback")}&client_id=${config.RIOT_CLIENT_ID}&response_type=code&scope=openid%20profile%20lol`;
+      authUrl = `https://auth.riotgames.com/authorize?redirect_uri=${encodeURIComponent(config.OAUTH_REDIRECT_BASE + "/api/auth/riot")}&client_id=${config.RIOT_CLIENT_ID}&response_type=code&scope=openid%20profile%20lol&state=${userId}`;
       break;
     case "epic":
-      authUrl = `https://www.epicgames.com/id/authorize?redirect_uri=${encodeURIComponent(config.OAUTH_REDIRECT_BASE + "/oauth/epic/callback")}&client_id=${config.EPIC_CLIENT_ID}&response_type=code`;
+      authUrl = `https://www.epicgames.com/id/authorize?redirect_uri=${encodeURIComponent(config.OAUTH_REDIRECT_BASE + "/api/auth/epic")}&client_id=${config.EPIC_CLIENT_ID}&response_type=code&state=${userId}`;
       break;
   }
 
