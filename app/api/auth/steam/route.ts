@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { accountService } from "@/lib/backend/services/AccountService";
+import { verifyOAuthState } from "@/src/utils/oauthState";
 import { PlatformType } from "@/lib/backend/types";
 
 const STEAM_OPENID_URL = "https://steamcommunity.com/openid/login";
@@ -143,6 +144,16 @@ export async function GET(request: NextRequest) {
     );
   }
 
+  const stateResult = verifyOAuthState(state, { expectedPlatform: "steam" });
+  if (!stateResult.valid || !stateResult.payload) {
+    console.error("[Steam] Invalid OAuth state", { reason: stateResult.reason });
+    return NextResponse.redirect(
+      new URL("/linked?error=Invalid+or+expired+Steam+link+session", request.url),
+    );
+  }
+
+  const userId = stateResult.payload.userId;
+
   const steamId = extractSteamId(params);
   if (!steamId) {
     console.error("[Steam] Could not extract Steam ID from response");
@@ -175,13 +186,13 @@ export async function GET(request: NextRequest) {
 
   try {
     await accountService.linkAccount(
-      state,
+      userId,
       PlatformType.STEAM,
       steamId,
       undefined,
       undefined,
     );
-    console.log("[Steam] Account linked successfully for user:", state);
+    console.log("[Steam] Account linked successfully for user:", userId);
     return NextResponse.redirect(
       new URL("/linked?platform=steam", request.url),
     );

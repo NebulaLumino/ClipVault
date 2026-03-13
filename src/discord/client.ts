@@ -15,6 +15,7 @@ import { userService } from "../services/UserService.js";
 import { accountService } from "../services/AccountService.js";
 import { allCommands } from "./commands.js";
 import { PlatformType, DeliveryMethod, ClipType } from "../types/index.js";
+import { createOAuthState, type OAuthPlatform } from "../utils/oauthState.js";
 
 export class ClipVaultClient extends Client {
   public rest: REST;
@@ -99,6 +100,19 @@ export class ClipVaultClient extends Client {
 
 export const discordClient = new ClipVaultClient();
 
+function createPlatformAuthUrl(platform: OAuthPlatform, userId: string): string {
+  const state = createOAuthState({ userId, platform });
+
+  switch (platform) {
+    case "steam":
+      return `https://steamcommunity.com/openid/login?openid.ns=http://specs.openid.net/auth/2.0&openid.mode=checkid_setup&openid.return_to=${encodeURIComponent(config.OAUTH_REDIRECT_BASE + "/api/auth/steam?state=" + state)}&openid.realm=${encodeURIComponent(config.OAUTH_REDIRECT_BASE)}&openid.claimed_id=http://specs.openid.net/auth/2.0/identifier_select&openid.identity=http://specs.openid.net/auth/2.0/identifier_select`;
+    case "riot":
+      return `https://auth.riotgames.com/authorize?redirect_uri=${encodeURIComponent(config.OAUTH_REDIRECT_BASE + "/api/auth/riot")}&client_id=${config.RIOT_CLIENT_ID}&response_type=code&scope=openid%20profile%20lol&state=${encodeURIComponent(state)}`;
+    case "epic":
+      return `https://www.epicgames.com/id/authorize?redirect_uri=${encodeURIComponent(config.OAUTH_REDIRECT_BASE + "/api/auth/epic")}&client_id=${config.EPIC_CLIENT_ID}&response_type=code&state=${encodeURIComponent(state)}`;
+  }
+}
+
 // Event handlers
 discordClient.on("ready", async () => {
   logger.info(`Discord bot ready: ${discordClient.user?.tag}`);
@@ -149,18 +163,17 @@ discordClient.on("interactionCreate", async (interaction) => {
 
         switch (subcommand) {
           case "steam":
-            authUrl = `https://steamcommunity.com/openid/login?openid.ns=http://specs.openid.net/auth/2.0&openid.mode=checkid_setup&openid.return_to=${encodeURIComponent(config.OAUTH_REDIRECT_BASE + "/api/auth/steam?state=" + user.id)}&openid.realm=${encodeURIComponent(config.OAUTH_REDIRECT_BASE)}&openid.claimed_id=http://specs.openid.net/auth/2.0/identifier_select&openid.identity=http://specs.openid.net/auth/2.0/identifier_select`;
+            authUrl = createPlatformAuthUrl("steam", user.id);
             break;
           case "riot":
-            authUrl = `https://auth.riotgames.com/authorize?redirect_uri=${encodeURIComponent(config.OAUTH_REDIRECT_BASE + "/api/auth/riot")}&client_id=${config.RIOT_CLIENT_ID}&response_type=code&scope=openid%20profile%20lol&state=${user.id}`;
+            authUrl = createPlatformAuthUrl("riot", user.id);
             break;
           case "epic":
-            authUrl = `https://www.epicgames.com/id/authorize?redirect_uri=${encodeURIComponent(config.OAUTH_REDIRECT_BASE + "/api/auth/epic")}&client_id=${config.EPIC_CLIENT_ID}&response_type=code&state=${user.id}`;
+            authUrl = createPlatformAuthUrl("epic", user.id);
             break;
         }
 
         if (authUrl) {
-          console.log("[DEBUG] Sending to Discord:", authUrl);
           await interaction.reply({
             content: `Please link your account: ${authUrl}`,
             ephemeral: true,

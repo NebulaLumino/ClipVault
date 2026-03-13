@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { accountService } from "@/lib/backend/services/AccountService";
+import { verifyOAuthState } from "@/src/utils/oauthState";
 import { PlatformType } from "@/lib/backend/types";
 
 const EPIC_TOKEN_URL = "https://api.epicgames.dev/epic/oauth/v2/token";
@@ -27,6 +28,16 @@ export async function GET(request: NextRequest) {
       new URL("/linked?error=Missing+code+or+state", request.url),
     );
   }
+
+  const stateResult = verifyOAuthState(state, { expectedPlatform: "epic" });
+  if (!stateResult.valid || !stateResult.payload) {
+    console.error("[Epic] Invalid OAuth state", { reason: stateResult.reason });
+    return NextResponse.redirect(
+      new URL("/linked?error=Invalid+or+expired+Epic+link+session", request.url),
+    );
+  }
+
+  const userId = stateResult.payload.userId;
 
   const clientId = process.env.EPIC_CLIENT_ID;
   const clientSecret = process.env.EPIC_CLIENT_SECRET;
@@ -97,7 +108,6 @@ export async function GET(request: NextRequest) {
     }
 
     // Step 3: Link the account
-    const userId = state;
     await accountService.linkAccount(
       userId,
       PlatformType.EPIC,

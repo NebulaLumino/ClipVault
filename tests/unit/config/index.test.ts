@@ -64,9 +64,22 @@ describe('Config', () => {
     vi.stubEnv('DISCORD_CLIENT_ID', '123456789');
     vi.stubEnv('DISCORD_CLIENT_SECRET', 'test-secret');
     vi.stubEnv('DISCORD_BOT_TOKEN', 'test-token');
+    vi.stubEnv('OAUTH_REDIRECT_BASE', 'https://clipvault-six.vercel.app');
 
     const { config } = await import('../../../src/config/index.js');
     
     expect(config.OAUTH_REDIRECT_BASE).toBe('https://clipvault-six.vercel.app');
+  });
+
+  it('should expose OAUTH_STATE_SECRET when provided', async () => {
+    vi.stubEnv('DATABASE_URL', 'postgresql://user:pass@localhost:5432/clipvault');
+    vi.stubEnv('DISCORD_CLIENT_ID', '123456789');
+    vi.stubEnv('DISCORD_CLIENT_SECRET', 'test-secret');
+    vi.stubEnv('DISCORD_BOT_TOKEN', 'test-token');
+    vi.stubEnv('OAUTH_STATE_SECRET', 'state-secret');
+
+    const { config } = await import('../../../src/config/index.js');
+
+    expect(config.OAUTH_STATE_SECRET).toBe('state-secret');
   });
 });

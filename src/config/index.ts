@@ -19,6 +19,7 @@ const configSchema = z.object({
 
   // OAuth
   OAUTH_REDIRECT_BASE: z.string().min(1).default("http://localhost:3000"),
+  OAUTH_STATE_SECRET: z.string().optional(),
 
   // Steam
   STEAM_API_KEY: z.string().optional(),

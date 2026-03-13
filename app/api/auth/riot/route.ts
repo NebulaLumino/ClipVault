@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { accountService } from "@/lib/backend/services/AccountService";
+import { verifyOAuthState } from "@/src/utils/oauthState";
 import { PlatformType } from "@/lib/backend/types";
 
 const RIOT_TOKEN_URL = "https://auth.riotgames.com/token";
@@ -27,6 +28,16 @@ export async function GET(request: NextRequest) {
       new URL("/linked?error=Missing+code+or+state", request.url),
     );
   }
+
+  const stateResult = verifyOAuthState(state, { expectedPlatform: "riot" });
+  if (!stateResult.valid || !stateResult.payload) {
+    console.error("[Riot] Invalid OAuth state", { reason: stateResult.reason });
+    return NextResponse.redirect(
+      new URL("/linked?error=Invalid+or+expired+Riot+link+session", request.url),
+    );
+  }
+
+  const userId = stateResult.payload.userId;
 
   const clientId = process.env.RIOT_CLIENT_ID;
   const clientSecret = process.env.RIOT_CLIENT_SECRET;
@@ -96,7 +107,6 @@ export async function GET(request: NextRequest) {
     }
 
     // Step 3: Link the account
-    const userId = state;
     await accountService.linkAccount(
       userId,
       PlatformType.RIOT,

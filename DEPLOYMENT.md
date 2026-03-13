@@ -50,6 +50,7 @@
 ### Vercel (Frontend)
 - `LEETIFY_API_KEY`
 - `FACEIT_API_KEY`
+- `OAUTH_STATE_SECRET` (recommended; signs OAuth/OpenID link state tokens)
 - All existing variables (DATABASE_URL, etc.)
 
 ### VPS (Backend)
@@ -57,6 +58,7 @@ Add to `/home/ubuntu/github/ClipVault/.env`:
 ```
 LEETIFY_API_KEY=your_leetify_key_here
 FACEIT_API_KEY=your_faceit_key_here
+OAUTH_STATE_SECRET=your_long_random_secret_here
 ```
 
 ## Verification

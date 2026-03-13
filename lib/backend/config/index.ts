@@ -14,6 +14,7 @@ const configSchema = z.object({
   DISCORD_GUILD_ID: z.string().optional(),
 
   OAUTH_REDIRECT_BASE: z.string().min(1).default('http://localhost:3000'),
+  OAUTH_STATE_SECRET: z.string().optional(),
 
   STEAM_API_KEY: z.string().optional(),
 
