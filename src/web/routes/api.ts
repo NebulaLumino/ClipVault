@@ -24,21 +24,21 @@ export async function apiRoutes(fastify: FastifyInstance): Promise<void> {
     return user;
   });
 
-  fastify.get("/api/users/:userId/accounts", async (request, reply) => {
+  fastify.get("/api/users/:userId/accounts", async (request) => {
     const { userId } = request.params as { userId: string };
 
     const accounts = await accountService.getLinkedAccounts(userId);
     return accounts;
   });
 
-  fastify.get("/api/users/:userId/preferences", async (request, reply) => {
+  fastify.get("/api/users/:userId/preferences", async (request) => {
     const { userId } = request.params as { userId: string };
 
     const preferences = await preferenceService.getUserPreferences(userId);
     return preferences;
   });
 
-  fastify.put("/api/users/:userId/preferences", async (request, reply) => {
+  fastify.put("/api/users/:userId/preferences", async (request) => {
     const { userId } = request.params as { userId: string };
     const body = request.body as Record<string, unknown>;
 
@@ -49,7 +49,7 @@ export async function apiRoutes(fastify: FastifyInstance): Promise<void> {
     return preferences;
   });
 
-  fastify.get("/api/users/:userId/clips", async (request, reply) => {
+  fastify.get("/api/users/:userId/clips", async (request) => {
     const { userId } = request.params as { userId: string };
     const { limit = "10", status } = request.query as {
       limit?: string;
@@ -66,7 +66,7 @@ export async function apiRoutes(fastify: FastifyInstance): Promise<void> {
     return clips;
   });
 
-  fastify.get("/api/users/:userId/deliveries", async (request, reply) => {
+  fastify.get("/api/users/:userId/deliveries", async (request) => {
     const { userId } = request.params as { userId: string };
     const { limit = "20" } = request.query as { limit?: string };
 
@@ -88,7 +88,7 @@ export async function apiRoutes(fastify: FastifyInstance): Promise<void> {
     return clip;
   });
 
-  fastify.get("/api/clips/:clipId/deliveries", async (request, reply) => {
+  fastify.get("/api/clips/:clipId/deliveries", async (request) => {
     const { clipId } = request.params as { clipId: string };
 
     const deliveries = await deliveryRepository.findByClipId(clipId);

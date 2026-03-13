@@ -54,7 +54,7 @@ export class RiotClient {
   }
 
   // Routing based on region
-  private getRegionalRoute(puuid: string): string {
+  private getRegionalRoute(): string {
     return 'americas';
   }
 
@@ -87,7 +87,7 @@ export class RiotClient {
       throw new RiotError('Riot API key not configured', 'NOT_CONFIGURED');
     }
 
-    const route = this.getRegionalRoute(puuid);
+    const route = this.getRegionalRoute();
     const url = `https://${route}.api.riotgames.com/lol/match/v5/matches/by-puuid/${puuid}/ids?count=${count}`;
 
     try {

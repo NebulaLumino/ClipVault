@@ -2,7 +2,6 @@ import { linkedAccountRepository } from "../../db/repositories/LinkedAccountRepo
 import { matchRepository } from "../../db/repositories/MatchRepository.js";
 import { cs2Poller } from "./pollers/CS2Poller.js";
 import { lolPoller } from "./pollers/LoLPoller.js";
-import { dota2Poller } from "./pollers/Dota2Poller.js";
 import { fortnitePoller } from "./pollers/FortnitePoller.js";
 import { faceitCS2Poller } from "./pollers/FaceitCS2Poller.js";
 import type { BasePoller } from "./pollers/BasePoller.js";

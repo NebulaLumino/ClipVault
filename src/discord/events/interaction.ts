@@ -27,7 +27,7 @@ async function handleSlashCommand(interaction: any): Promise<void> {
   logger.info("Command received", { commandName, userId: discordUser.id });
 
   try {
-    let user = await userService.getOrCreateUser(
+    const user = await userService.getOrCreateUser(
       discordUser.id,
       discordUser.username,
       discordUser.globalName || undefined,

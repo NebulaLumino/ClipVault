@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client';
 import prisma from '../db/prisma.js';
 import { logger } from '../utils/logger.js';
-import { ClipStatus, ClipType, MatchStatus } from '../types/index.js';
+import { ClipStatus, ClipType } from '../types/index.js';
 import type { ClipRecord, MatchRecord } from '../types/index.js';
 
 export interface CreateClipData {

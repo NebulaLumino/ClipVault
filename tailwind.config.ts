@@ -1,5 +1,7 @@
+import tailwindcssAnimate from "tailwindcss-animate";
+
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+const config = {
   darkMode: ["class"],
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -67,8 +69,8 @@ module.exports = {
         "slide-in-left": "slideInLeft 0.6s ease-out",
         "slide-in-right": "slideInRight 0.6s ease-out",
         "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
-        "float": "float 3s ease-in-out infinite",
-        "glow": "glow 2s ease-in-out infinite alternate",
+        float: "float 3s ease-in-out infinite",
+        glow: "glow 2s ease-in-out infinite alternate",
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
@@ -112,5 +114,7 @@ module.exports = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [tailwindcssAnimate],
 };
+
+export default config;

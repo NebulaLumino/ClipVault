@@ -1,4 +1,4 @@
-import { EmbedBuilder, type APIEmbed } from "discord.js";
+import { EmbedBuilder } from "discord.js";
 import { ClipType, ClipStatus } from "../../types/index.js";
 
 export class ClipEmbed {

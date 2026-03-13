@@ -1,7 +1,4 @@
-import {
-  allstarClient,
-  type AllstarClip,
-} from "../../integrations/allstar/AllstarClient.js";
+import { allstarClient } from "../../integrations/allstar/AllstarClient.js";
 import { clipRepository } from "../../db/repositories/ClipRepository.js";
 import { logger } from "../../utils/logger.js";
 import { ClipStatus, type ClipRecord } from "../../types/index.js";

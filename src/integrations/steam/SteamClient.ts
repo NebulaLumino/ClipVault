@@ -84,6 +84,7 @@ export class SteamClient {
    * Use LeetifyClient.getMatchHistory() for actual CS2 match data instead.
    */
   async getCS2MatchHistory(steamId: string, limit = 5): Promise<CS2Match[]> {
+    logger.warn("Deprecated CS2 match history called", { steamId, limit });
     throw new SteamError(
       "getCS2MatchHistory is deprecated - use LeetifyClient for CS2 matches",
       "DEPRECATED"

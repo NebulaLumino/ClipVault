@@ -5,7 +5,7 @@ import {
   MatchStatus as PrismaMatchStatus,
 } from "@prisma/client";
 import prisma from "../prisma.js";
-import type { MatchRecord, ClipRecord } from "@prisma/client";
+import type { MatchRecord } from "@prisma/client";
 import type {
   PlatformType,
   GamePlatform,

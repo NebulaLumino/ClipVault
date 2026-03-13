@@ -9,8 +9,6 @@ import { logger } from "../../utils/logger.js";
 import {
   MatchStatus,
   ClipStatus,
-  PlatformType,
-  type MatchRecord,
   type ClipRecord,
 } from "../../types/index.js";
 
@@ -48,9 +46,9 @@ export class ClipOrchestrator {
       return [];
     }
 
-    const linkedAccount = await linkedAccountRepository.findById(match.userId);
-    if (!linkedAccount) {
-      logger.warn("Linked account not found for match", {
+    const linkedAccounts = await linkedAccountRepository.findByUserId(match.userId);
+    if (linkedAccounts.length === 0) {
+      logger.warn("No linked accounts found for match user", {
         matchId,
         userId: match.userId,
       });

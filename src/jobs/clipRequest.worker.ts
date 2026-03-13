@@ -3,7 +3,7 @@ import { logger } from "../utils/logger.js";
 import { clipService, CreateClipData } from "../services/ClipService.js";
 import { allstarClient } from "../integrations/allstar/AllstarClient.js";
 import type { ClipRequestJobData } from "../types/index.js";
-import { ClipType, MatchStatus } from "../types/index.js";
+import { ClipType } from "../types/index.js";
 
 export function createClipRequestWorker() {
   const worker = new Worker<ClipRequestJobData>(
@@ -13,7 +13,6 @@ export function createClipRequestWorker() {
         matchId,
         userId,
         platform,
-        platformAccountId,
         platformMatchId,
         gameTitle,
       } = job.data;

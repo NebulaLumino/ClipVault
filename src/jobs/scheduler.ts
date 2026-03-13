@@ -2,7 +2,6 @@ import { logger } from '../utils/logger.js';
 import { accountService } from '../services/AccountService.js';
 import { matchPollQueue, clipRequestQueue } from './queue.js';
 import { matchService } from '../services/MatchService.js';
-import type { LinkedAccount } from '../types/index.js';
 
 const POLL_INTERVAL_MS = 2 * 60 * 1000; // 2 minutes
 let schedulerInterval: ReturnType<typeof setInterval> | null = null;

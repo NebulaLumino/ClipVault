@@ -1,13 +1,6 @@
-import { linkedAccountRepository } from "../../db/repositories/LinkedAccountRepository.js";
-import { matchRepository } from "../../db/repositories/MatchRepository.js";
 import { clipRepository } from "../../db/repositories/ClipRepository.js";
 import { logger } from "../../utils/logger.js";
-import {
-  PlatformType,
-  GamePlatform,
-  type MatchRecord,
-  type ClipRecord,
-} from "../../types/index.js";
+import { type MatchRecord } from "../../types/index.js";
 
 export interface FilterCriteria {
   minMatchDuration?: number;
@@ -100,7 +93,7 @@ export class ClipFilterService {
     preferredClipTypes: string[];
     deliveryMethod: string;
   }> {
-    const linkedAccounts = await linkedAccountRepository.findByUserId(userId);
+    void userId;
 
     const preferences = {
       preferredClipTypes: ["highlight", "play_of_the_game", "clutch", "ace"],

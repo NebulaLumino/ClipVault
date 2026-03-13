@@ -1,9 +1,7 @@
 import prisma from '../db/prisma.js';
 import { logger } from '../utils/logger.js';
 import { PlatformType, AccountLinkStatus } from '../types/index.js';
-import { steamClient } from '../integrations/steam/SteamClient.js';
 import { riotClient } from '../integrations/riot/RiotClient.js';
-import { epicClient } from '../integrations/epic/EpicClient.js';
 import { leetifyClient } from '../integrations/leetify/LeetifyClient.js';
 import { faceitClient } from '../integrations/faceit/FaceitClient.js';
 import type { LinkedAccount } from '../types/index.js';

@@ -1,5 +1,4 @@
 import { linkedAccountRepository } from "../../db/repositories/LinkedAccountRepository.js";
-import { logger } from "../../utils/logger.js";
 import type { PlatformType } from "../../types/index.js";
 
 export interface ValidationResult {

@@ -1,5 +1,4 @@
 import {
-  Prisma,
   DeliveryMethod as PrismaDeliveryMethod,
   DeliveryStatus as PrismaDeliveryStatus,
 } from "@prisma/client";

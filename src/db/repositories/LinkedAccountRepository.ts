@@ -1,5 +1,4 @@
 import {
-  Prisma,
   PlatformType as PrismaPlatformType,
   AccountLinkStatus as PrismaAccountLinkStatus,
 } from "@prisma/client";

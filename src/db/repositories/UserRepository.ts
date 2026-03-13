@@ -1,12 +1,6 @@
 import { Prisma } from "@prisma/client";
 import prisma from "../prisma.js";
-import type {
-  User,
-  LinkedAccount,
-  MatchRecord,
-  ClipRecord,
-  DeliveryRecord,
-} from "@prisma/client";
+import type { User, LinkedAccount } from "@prisma/client";
 
 export interface CreateUserData {
   discordId: string;

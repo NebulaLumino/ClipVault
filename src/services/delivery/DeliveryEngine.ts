@@ -1,4 +1,3 @@
-import prisma from "../../db/prisma.js";
 import { clipRepository } from "../../db/repositories/ClipRepository.js";
 import { deliveryRepository } from "../../db/repositories/DeliveryRepository.js";
 import { userRepository } from "../../db/repositories/UserRepository.js";
@@ -10,8 +9,6 @@ import {
   DeliveryMethod,
   DeliveryStatus,
   ClipStatus,
-  type ClipRecord,
-  type DeliveryRecord,
 } from "../../types/index.js";
 
 export interface DeliverClipOptions {

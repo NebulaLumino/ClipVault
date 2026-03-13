@@ -3,7 +3,6 @@ import cors from '@fastify/cors';
 import cookie from '@fastify/cookie';
 import { config } from '../config/index.js';
 import { logger } from '../utils/logger.js';
-import { userService } from '../services/UserService.js';
 import { accountService } from '../services/AccountService.js';
 import { PlatformType } from '../types/index.js';
 import prisma from '../db/prisma.js';
@@ -99,7 +98,7 @@ fastify.get('/oauth/epic/callback', async (request: FastifyRequest, reply: Fasti
 });
 
 // Allstar webhook handler
-fastify.post('/webhooks/allstar', async (request: FastifyRequest, reply: FastifyReply) => {
+fastify.post('/webhooks/allstar', async (request: FastifyRequest) => {
   const body = request.body as Record<string, unknown>;
 
   logger.debug('Allstar webhook received', body);

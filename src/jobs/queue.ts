@@ -1,5 +1,4 @@
-import { Queue, Worker } from 'bullmq';
-import redis from '../db/redis.js';
+import { Queue } from 'bullmq';
 import { config } from '../config/index.js';
 import { logger } from '../utils/logger.js';
 

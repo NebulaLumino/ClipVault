@@ -10,6 +10,7 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://clipvault.vercel.app"),
   title: "ClipVault - Automate Your Gaming Highlights",
   description: "Automatically deliver gaming highlights from CS2, Dota 2, League of Legends, and Fortnite directly to your Discord. Link your accounts and never miss a highlight again.",
   keywords: ["gaming", "highlights", "clips", "Discord", "CS2", "Dota 2", "League of Legends", "Fortnite", "automation"],

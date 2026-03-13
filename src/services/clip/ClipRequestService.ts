@@ -5,7 +5,6 @@ import { logger } from "../../utils/logger.js";
 import {
   ClipStatus,
   ClipType,
-  GameTitle,
   type ClipRecord,
 } from "../../types/index.js";
 
