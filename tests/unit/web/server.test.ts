@@ -1,7 +1,10 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import Fastify, { FastifyReply, FastifyRequest } from 'fastify';
 
-// Mock the config before importing the server
+const mocks = vi.hoisted(() => ({
+  linkAccountMock: vi.fn().mockResolvedValue({}),
+  loggerWarnMock: vi.fn(),
+}));
+
 vi.mock('../../../src/config/index.js', () => ({
   config: {
     PORT: 3000,
@@ -14,11 +17,11 @@ vi.mock('../../../src/config/index.js', () => ({
 }));
 
 vi.mock('../../../src/utils/logger.js', () => ({
-  logger: { 
-    info: vi.fn(), 
-    error: vi.fn(), 
-    warn: vi.fn(), 
-    debug: vi.fn() 
+  logger: {
+    info: vi.fn(),
+    error: vi.fn(),
+    warn: mocks.loggerWarnMock,
+    debug: vi.fn(),
   },
 }));
 
@@ -28,11 +31,11 @@ vi.mock('../../../src/services/UserService.js', () => ({
 
 vi.mock('../../../src/services/AccountService.js', () => ({
   accountService: {
-    linkAccount: vi.fn().mockResolvedValue({}),
+    linkAccount: mocks.linkAccountMock,
   },
 }));
 
-vi.mock('../jobs/queue.js', () => ({
+vi.mock('../../../src/jobs/queue.js', () => ({
   clipDeliveryQueue: {
     add: vi.fn().mockResolvedValue({}),
   },
@@ -44,6 +47,7 @@ vi.mock('../../../src/db/prisma.js', () => ({
       findFirst: vi.fn().mockResolvedValue(null),
       findUnique: vi.fn().mockResolvedValue(null),
       create: vi.fn().mockResolvedValue({}),
+      update: vi.fn().mockResolvedValue({}),
     },
     user: {
       findUnique: vi.fn().mockResolvedValue(null),
@@ -54,12 +58,16 @@ vi.mock('../../../src/db/prisma.js', () => ({
   },
 }));
 
-// Import after mocks are set up
 import { fastify } from '../../../src/web/server.js';
 
 describe('Web Server', () => {
   beforeEach(async () => {
     vi.clearAllMocks();
+    vi.stubEnv('OAUTH_STATE_SECRET', 'test-oauth-state-secret');
+  });
+
+  afterEach(() => {
+    vi.unstubAllEnvs();
   });
 
   describe('Server configuration', () => {
@@ -109,6 +117,68 @@ describe('Web Server', () => {
       });
       
       expect(response.statusCode).toBe(400);
+    });
+
+    it('should reject Steam OAuth with tampered state before linking', async () => {
+      const { createOAuthState } = await import('../../../src/utils/oauthState.js');
+      const validState = createOAuthState({
+        userId: 'user-123',
+        platform: 'steam',
+        nowMs: Date.now(),
+      });
+      const tamperedState = `${validState.slice(0, -1)}x`;
+
+      const response = await fastify.inject({
+        method: 'GET',
+        url: `/oauth/steam/callback?code=test-code&steamId=steam-123&state=${encodeURIComponent(tamperedState)}`,
+      });
+
+      expect(response.statusCode).toBe(400);
+      expect(response.json()).toEqual({ error: 'Invalid or expired Steam link session' });
+      expect(mocks.linkAccountMock).not.toHaveBeenCalled();
+      expect(mocks.loggerWarnMock).toHaveBeenCalled();
+    });
+
+    it('should reject Riot OAuth with platform-mismatched state before linking', async () => {
+      const { createOAuthState } = await import('../../../src/utils/oauthState.js');
+      const mismatchedState = createOAuthState({
+        userId: 'user-123',
+        platform: 'steam',
+        nowMs: Date.now(),
+      });
+
+      const response = await fastify.inject({
+        method: 'GET',
+        url: `/oauth/riot/callback?code=test-code&state=${encodeURIComponent(mismatchedState)}`,
+      });
+
+      expect(response.statusCode).toBe(400);
+      expect(response.json()).toEqual({ error: 'Invalid or expired Riot link session' });
+      expect(mocks.linkAccountMock).not.toHaveBeenCalled();
+    });
+
+    it('should accept Epic OAuth with a valid signed state', async () => {
+      const { createOAuthState } = await import('../../../src/utils/oauthState.js');
+      const validState = createOAuthState({
+        userId: 'user-123',
+        platform: 'epic',
+        nowMs: Date.now(),
+      });
+
+      const response = await fastify.inject({
+        method: 'GET',
+        url: `/oauth/epic/callback?code=test-code&epicId=epic-123&state=${encodeURIComponent(validState)}`,
+      });
+
+      expect(response.statusCode).toBe(302);
+      expect(response.headers.location).toBe('http://localhost:3000/linked?platform=epic');
+      expect(mocks.linkAccountMock).toHaveBeenCalledWith(
+        'user-123',
+        expect.anything(),
+        'epic-123',
+        undefined,
+        'test-code',
+      );
     });
   });
 

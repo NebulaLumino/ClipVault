@@ -5,11 +5,29 @@ import { config } from '../config/index.js';
 import { logger } from '../utils/logger.js';
 import { accountService } from '../services/AccountService.js';
 import { PlatformType } from '../types/index.js';
+import { verifyOAuthState } from '../utils/oauthState.js';
 import prisma from '../db/prisma.js';
 
 const fastify = Fastify({
   logger: false,
 });
+
+function getOAuthUserId(
+  state: string,
+  platform: 'steam' | 'riot' | 'epic',
+): string | null {
+  const stateResult = verifyOAuthState(state, { expectedPlatform: platform });
+
+  if (!stateResult.valid || !stateResult.payload) {
+    logger.warn('Rejected OAuth callback with invalid state', {
+      platform,
+      reason: stateResult.reason,
+    });
+    return null;
+  }
+
+  return stateResult.payload.userId;
+}
 
 // Register plugins
 await fastify.register(cors, {
@@ -32,8 +50,12 @@ fastify.get('/oauth/steam/callback', async (request: FastifyRequest, reply: Fast
     return reply.status(400).send({ error: 'Missing code or state' });
   }
 
+  const userId = getOAuthUserId(state, 'steam');
+  if (!userId) {
+    return reply.status(400).send({ error: 'Invalid or expired Steam link session' });
+  }
+
   try {
-    const userId = state;
     await accountService.linkAccount(
       userId,
       PlatformType.STEAM,
@@ -56,8 +78,12 @@ fastify.get('/oauth/riot/callback', async (request: FastifyRequest, reply: Fasti
     return reply.status(400).send({ error: 'Missing code or state' });
   }
 
+  const userId = getOAuthUserId(state, 'riot');
+  if (!userId) {
+    return reply.status(400).send({ error: 'Invalid or expired Riot link session' });
+  }
+
   try {
-    const userId = state;
     await accountService.linkAccount(
       userId,
       PlatformType.RIOT,
@@ -80,8 +106,12 @@ fastify.get('/oauth/epic/callback', async (request: FastifyRequest, reply: Fasti
     return reply.status(400).send({ error: 'Missing code or state' });
   }
 
+  const userId = getOAuthUserId(state, 'epic');
+  if (!userId) {
+    return reply.status(400).send({ error: 'Invalid or expired Epic link session' });
+  }
+
   try {
-    const userId = state;
     await accountService.linkAccount(
       userId,
       PlatformType.EPIC,
