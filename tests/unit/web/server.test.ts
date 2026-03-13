@@ -38,6 +38,22 @@ vi.mock('../jobs/queue.js', () => ({
   },
 }));
 
+vi.mock('../../../src/db/prisma.js', () => ({
+  default: {
+    clipRecord: {
+      findFirst: vi.fn().mockResolvedValue(null),
+      findUnique: vi.fn().mockResolvedValue(null),
+      create: vi.fn().mockResolvedValue({}),
+    },
+    user: {
+      findUnique: vi.fn().mockResolvedValue(null),
+    },
+    linkedAccount: {
+      findFirst: vi.fn().mockResolvedValue(null),
+    },
+  },
+}));
+
 // Import after mocks are set up
 import { fastify } from '../../../src/web/server.js';
 
