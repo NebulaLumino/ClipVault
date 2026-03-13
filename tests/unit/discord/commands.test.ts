@@ -30,7 +30,7 @@ describe('Discord Commands', () => {
     it('should export allCommands array', () => {
       expect(commands.allCommands).toBeDefined();
       expect(Array.isArray(commands.allCommands)).toBe(true);
-      expect(commands.allCommands.length).toBe(6);
+      expect(commands.allCommands.length).toBe(7);
     });
   });
 });

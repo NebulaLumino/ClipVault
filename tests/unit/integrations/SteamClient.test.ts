@@ -52,18 +52,9 @@ describe('SteamClient', () => {
   });
 
   describe('getCS2MatchHistory', () => {
-    it('should return match history', async () => {
-      const mockMatches = [
-        { match_id: 123, start_time: 1000, radiant_win: true, player_slot: 0, radiant_score: 16, dire_score: 12 },
-      ];
-      global.fetch = vi.fn().mockResolvedValue({
-        ok: true,
-        json: async () => mockMatches,
-      });
-
-      const result = await steamClient.getCS2MatchHistory('123456', 5);
-      expect(result).toHaveLength(1);
-      expect(result[0].matchid).toBe('123');
+    it('should throw deprecation error', async () => {
+      await expect(steamClient.getCS2MatchHistory('123456', 5))
+        .rejects.toThrow('getCS2MatchHistory is deprecated');
     });
   });
 
